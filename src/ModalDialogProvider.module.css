@@ -1,0 +1,54 @@
+.Dialog {
+  border: none;
+  padding: 1.5rem;
+  background-color: #fff;
+  user-select: none;
+  box-sizing: border-box;
+  max-width: calc(100vw - 32px);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  border-radius: 8px;
+  visibility: hidden;
+  transform: translateY(16px);
+  display: block;
+  position: fixed;
+  transition: all 0.1s ease-in;
+  opacity: 0;
+  inset-block: 0;
+}
+
+.Dialog[open] {
+  transition: all 0.1s ease-out;
+  transform: none;
+  visibility: visible;
+  opacity: 1;
+}
+
+.Dialog::backdrop {
+  background: rgba(255, 0, 0, 0.5);
+  animation: backdrop-fade 0.1s ease-out forwards;
+}
+
+@keyframes backdrop-fade {
+  from {
+    background: transparent;
+  }
+  to {
+    background: rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* @keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+} */
+
+@media screen and (max-width: 640px) {
+  .Dialog {
+    margin-bottom: 16px;
+    width: 100%;
+  }
+}

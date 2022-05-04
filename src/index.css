@@ -1,13 +1,80 @@
+:root {
+  --gray-050: #f5f7fa;
+  --gray-100: #e4e7eb;
+  --gray-200: #cbd2d9;
+  --gray-300: #9aa5b1;
+  --gray-400: #7b8794;
+  --gray-500: #616e7c;
+  --gray-600: #52606d;
+  --gray-700: #3e4c59;
+  --gray-800: #323f4b;
+  --gray-900: #1f2933;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: var(--gray-900);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+
+* {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+button {
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  appearance: none;
+  background: var(--gray-100);
+  border: none;
+  padding-inline: 12px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease-in-out;
+  line-height: 1em;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+}
+
+button:active {
+  background: var(--gray-200);
+  transition-duration: 0s;
+}
+
+button > svg {
+  margin: -4px;
+  margin-inline-end: 2px;
+  color: var(--gray-700);
+}
+
+button.primary {
+  background: var(--gray-800);
+  color: white;
+}
+
+button.primary:active {
+  background: var(--gray-600);
+}
+
+button.primary > svg {
+  color: var(--gray-100);
+}
+
+input {
+  user-select: initial;
 }

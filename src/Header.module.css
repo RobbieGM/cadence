@@ -1,0 +1,35 @@
+.Header {
+  margin-block: 8px;
+  margin-inline: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+h1 {
+  font-size: 1.5rem;
+  line-height: 1em;
+}
+
+section {
+  display: flex;
+  gap: 8px;
+}
+
+@media screen and (max-width: 450px) {
+  .hideWhenSmall {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 640px) {
+  .Header {
+    margin-block: 16px;
+    margin-inline: 32px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+}
