@@ -1,0 +1,32 @@
+.TrackList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) max-content;
+  margin: 8px 16px;
+  user-select: text;
+}
+
+.label {
+  user-select: none;
+  font-weight: bold;
+}
+
+.tag {
+  display: inline-block;
+  height: 20px;
+  line-height: 20px;
+  padding-inline: 8px;
+  font-weight: 500;
+  border-radius: 1rem;
+  background-color: var(--gray-100);
+  font-size: 0.875rem;
+  margin-right: 4px;
+}
+
+div {
+  min-height: 24px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

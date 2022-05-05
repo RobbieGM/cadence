@@ -22,4 +22,5 @@
   color: var(--gray-700);
   max-width: 400px;
   text-align: center;
+  margin-block: 16px;
 }

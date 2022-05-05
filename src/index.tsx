@@ -4,6 +4,7 @@ import { ErrorBoundary, render } from "solid-js/web";
 import "./index.css";
 import App from "./App";
 import ModalDialogProvider from "./ModalDialogProvider";
+import DatabaseProvider from "./DatabaseProvider";
 
 render(
   () => (
@@ -14,9 +15,11 @@ render(
         return <p>A serious error occurred. Check the console for details.</p>;
       }}
     >
-      <ModalDialogProvider>
-        <App />
-      </ModalDialogProvider>
+      <DatabaseProvider>
+        <ModalDialogProvider>
+          <App />
+        </ModalDialogProvider>
+      </DatabaseProvider>
     </ErrorBoundary>
   ),
   document.getElementById("root") as HTMLElement

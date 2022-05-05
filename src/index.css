@@ -1,5 +1,5 @@
 :root {
-  --gray-050: #f5f7fa;
+  --gray-050: #f4f5f8;
   --gray-100: #e4e7eb;
   --gray-200: #cbd2d9;
   --gray-300: #9aa5b1;
@@ -19,6 +19,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: var(--gray-900);
+  overscroll-behavior: none;
 }
 
 h1,
@@ -32,6 +33,12 @@ h6 {
 
 * {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  margin: 0;
+  box-sizing: border-box;
+}
+
+dialog {
+  margin: auto;
 }
 
 button {
@@ -75,6 +82,39 @@ button.primary > svg {
   color: var(--gray-100);
 }
 
-input {
+input[type="text"] {
+  height: 40px;
+  line-height: 40px;
+}
+
+input[type="text"],
+textarea {
   user-select: initial;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 400;
+  border: none;
+  border-radius: 4px;
+  background: var(--gray-050);
+  box-shadow: 0 2px 0px -2px var(--gray-100) inset;
+  padding-inline: 12px;
+  padding-block: 8px;
+  transition: background-color 0.2s ease;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+  outline: none;
+  background: var(--gray-100);
+}
+
+label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+label > input,
+label > textarea {
+  display: block;
 }

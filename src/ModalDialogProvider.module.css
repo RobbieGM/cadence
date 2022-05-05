@@ -1,23 +1,23 @@
 .Dialog {
   border: none;
   padding: 1.5rem;
-  background-color: #fff;
   user-select: none;
-  box-sizing: border-box;
   max-width: calc(100vw - 32px);
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   border-radius: 8px;
   visibility: hidden;
-  transform: translateY(16px);
+  transform: translateY(100%);
   display: block;
   position: fixed;
-  transition: all 0.1s ease-in;
+  transition: all 0.2s ease-in;
   opacity: 0;
   inset-block: 0;
+  margin-bottom: 16px;
+  width: 100%;
 }
 
 .Dialog[open] {
-  transition: all 0.1s ease-out;
+  transition-timing-function: ease-out;
   transform: none;
   visibility: visible;
   opacity: 1;
@@ -37,18 +37,15 @@
   }
 }
 
-/* @keyframes fade {
-  from {
-    opacity: 0;
+@media screen and (min-width: 640px) {
+  .Dialog[open],
+  .Dialog:not([open]) {
+    margin-bottom: auto;
+    width: fit-content;
+    transition-duration: 0.1s;
   }
-  to {
-    opacity: 1;
-  }
-} */
 
-@media screen and (max-width: 640px) {
-  .Dialog {
-    margin-bottom: 16px;
-    width: 100%;
+  .Dialog:not([open]) {
+    transform: translateY(16px);
   }
 }
