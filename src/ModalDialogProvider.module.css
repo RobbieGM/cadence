@@ -24,7 +24,7 @@
 }
 
 .Dialog::backdrop {
-  background: rgba(255, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.1);
   animation: backdrop-fade 0.1s ease-out forwards;
 }
 
