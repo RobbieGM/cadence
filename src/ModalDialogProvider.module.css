@@ -42,7 +42,7 @@
   .Dialog:not([open]) {
     margin-bottom: auto;
     width: fit-content;
-    transition-duration: 0.1s;
+    transition-duration: 0.15s;
   }
 
   .Dialog:not([open]) {

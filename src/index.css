@@ -154,6 +154,11 @@ textarea:focus {
   background: var(--gray-100);
 }
 
+::placeholder {
+  color: var(--gray-400);
+  opacity: 1;
+}
+
 button,
 select {
   color: inherit;

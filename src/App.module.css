@@ -1,7 +1,4 @@
 .App {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
   user-select: none;
 }
 
@@ -12,6 +9,7 @@
   align-items: center;
   flex: 1;
   margin-inline: 16px;
+  margin-block-start: 64px;
 }
 
 .emptyState img {
