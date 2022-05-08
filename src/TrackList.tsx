@@ -1,4 +1,4 @@
-import { Component, For, useContext } from "solid-js";
+import { Component, createEffect, For, useContext } from "solid-js";
 import { TrackWithId } from "./types";
 
 import styles from "./TrackList.module.css";

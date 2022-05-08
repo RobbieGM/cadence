@@ -9,12 +9,13 @@
   --gray-700: #3e4c59;
   --gray-800: #323f4b;
   --gray-900: #1f2933;
+  --red-400: #e53e3e;
 }
 
 @font-face {
   font-family: "Music Symbols";
   /* MacOS (and I assume iOS?) and Windows have good looking flat and sharp symbols, Android does not */
-  src: local("San Francisco"), local("SF Pro") local("Segoe UI"),
+  src: local("San Francisco"), local("SF Pro"), local("Segoe UI"),
     url("/M-Plus-SharpFlat.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
@@ -151,6 +152,11 @@ input[type="text"]:focus,
 textarea:focus {
   outline: none;
   background: var(--gray-100);
+}
+
+button,
+select {
+  color: inherit;
 }
 
 label {

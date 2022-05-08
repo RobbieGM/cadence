@@ -1,6 +1,6 @@
 import { Component, createSignal, useContext } from "solid-js";
 import { DialogProps } from "./ModalDialogProvider";
-import { Track, TrackWithId } from "./types";
+import { Chord, Track, TrackWithId } from "./types";
 
 import styles from "./TrackEditor.module.css";
 import { DatabaseContext } from "./DatabaseProvider";
@@ -21,10 +21,8 @@ function createTrackEditor(track: TrackWithId | null): Component<DialogProps> {
         tags: tags()
           .split(",")
           .map((s) => s.trim()),
-        chords: [
-          { root: 0, quality: "minor" },
-          { root: 5, quality: "major" },
-        ], // chords().split(" ").map((s) => s.trim()),
+        chords: chords(),
+        keySignature: keySignature(),
       };
       if (track) {
         updateTrack(track.id, trackFromFormData);
@@ -34,13 +32,20 @@ function createTrackEditor(track: TrackWithId | null): Component<DialogProps> {
       props.close();
     }
     return (
-      <div class={styles.TrackEditor}>
+      <form
+        class={styles.TrackEditor}
+        onSubmit={(e) => {
+          e.preventDefault();
+          save();
+        }}
+      >
         <label>
           Title
           <input
             type="text"
             placeholder="Ride of the Valkyries"
             value={name()}
+            required
             onInput={(e) => setName(e.currentTarget.value)}
           />
         </label>
@@ -50,6 +55,7 @@ function createTrackEditor(track: TrackWithId | null): Component<DialogProps> {
             type="text"
             placeholder="dramatic, minor"
             value={tags()}
+            required
             onInput={(e) => setTags(e.currentTarget.value)}
           />
         </label>
@@ -62,16 +68,17 @@ function createTrackEditor(track: TrackWithId | null): Component<DialogProps> {
           placeholder="Bm D F#m F#…"
           keySignature={keySignature()}
           setKeySignature={setKeySignature}
+          required
         />
         <menu>
           <button type="button" onClick={() => props.close()}>
             Cancel
           </button>
-          <button type="button" class="primary" onClick={save}>
+          <button type="submit" class="primary">
             Save
           </button>
         </menu>
-      </div>
+      </form>
     );
   };
 }

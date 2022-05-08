@@ -1,10 +1,12 @@
 import classNames from "classnames/bind";
-import { Component, createSignal, For, Index, untrack } from "solid-js";
+import { batch, Component, createSignal, For, Index, untrack } from "solid-js";
 import {
+  ChordParseError,
   chordsToString,
   chordToString,
   getDefaultQuality,
   parseChord,
+  parseChordProgression,
 } from "./chord-utils";
 import styles from "./ChordProgressionEditor.module.css";
 import Backspace from "./icons/Backspace";
@@ -25,6 +27,7 @@ interface Props {
   setKeySignature: (keySignature: KeySignature) => void;
   textareaId?: string;
   placeholder?: string;
+  required?: boolean;
 }
 
 const accessibleNoteNames = [
@@ -96,9 +99,33 @@ const ChordProgressionEditor: Component<Props> = (props) => {
     // eslint-disable-next-line solid/reactivity
     chordsToString(chords, props.keySignature)
   );
+  const [errorMessage, setErrorMessage] = createSignal<string | null>(null);
   let textarea: HTMLTextAreaElement | undefined;
-  // Inserts a chord with the default quality given the key signature
-  function updateTextarea() {
+  function updateValidity(validity: true | string) {
+    if (validity === true) {
+      setErrorMessage(null);
+      textarea!.setCustomValidity("");
+    } else {
+      setErrorMessage(validity);
+      textarea!.setCustomValidity(validity);
+    }
+  }
+  function updateText(newText: string) {
+    batch(() => {
+      setText(newText);
+      try {
+        props.setChords(parseChordProgression(newText));
+        updateValidity(true);
+      } catch (e) {
+        if (e instanceof ChordParseError) {
+          updateValidity(e.message);
+        } else {
+          throw e;
+        }
+      }
+    });
+  }
+  function onTextareaInput() {
     if (!textarea) return;
     const before = textarea.value.substring(0, textarea.selectionStart);
     const inside = textarea.value.substring(
@@ -111,7 +138,7 @@ const ChordProgressionEditor: Component<Props> = (props) => {
       inside,
       after,
     ].map(autocorrect);
-    setText(`${beforeCorrected}${insideCorrected}${afterCorrected}`);
+    updateText(`${beforeCorrected}${insideCorrected}${afterCorrected}`);
     textarea.setSelectionRange(
       beforeCorrected.length,
       beforeCorrected.length + insideCorrected.length
@@ -124,9 +151,10 @@ const ChordProgressionEditor: Component<Props> = (props) => {
     let after = textarea.value.substring(textarea.selectionEnd);
     before = removeLastWord(before);
     after = removeFirstWord(after);
-    setText(`${before} ${after}`);
+    updateText(`${before} ${after}`);
     textarea.setSelectionRange(before.length, before.length);
   }
+  // Inserts a chord with the default quality given the key signature
   function insertChord(root: AbsoluteNote) {
     if (!textarea) return;
     // Check if the cursor is inside a chord, or between chords
@@ -153,7 +181,7 @@ const ChordProgressionEditor: Component<Props> = (props) => {
       const chordString = chordToString({ root, quality }, props.keySignature);
       const spaceBefore = atStart ? "" : " ";
       const spaceAfter = atEnd ? "" : " ";
-      setText(
+      updateText(
         `${before.trim()}${spaceBefore}${chordString}${spaceAfter}${after.trim()}`
       );
       const cursorPosition =
@@ -192,21 +220,25 @@ const ChordProgressionEditor: Component<Props> = (props) => {
     if (chord == null) return;
     const newChord = { ...chord, quality };
     const newChordString = chordToString(newChord, props.keySignature);
-    setText(`${beforeChord}${newChordString}${afterChord}`);
+    updateText(`${beforeChord}${newChordString}${afterChord}`);
     const newCursorPosition = beforeChord.length + newChordString.length;
     textarea.setSelectionRange(newCursorPosition, newCursorPosition);
   }
   return (
     <div class={styles.ChordProgressionEditor}>
-      <textarea
-        value={text()}
-        inputMode="none"
-        onInput={updateTextarea}
-        ref={textarea}
-        id={props.textareaId}
-        placeholder={props.placeholder}
-        spellcheck={false}
-      ></textarea>
+      <div class={styles.textareaContainer}>
+        <textarea
+          value={text()}
+          inputMode="none"
+          onInput={onTextareaInput}
+          ref={textarea}
+          id={props.textareaId}
+          placeholder={props.placeholder}
+          spellcheck={false}
+          required={props.required}
+        ></textarea>
+        <div class={styles.errorMessage}>{errorMessage()}</div>
+      </div>
       {/* Event handlers prevent blurring the textarea. Disabled eslint rule because the element itself is not interactive */}
       {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
       <div

@@ -6,10 +6,25 @@
   overflow: hidden;
 }
 
-.ChordProgressionEditor textarea {
+.textareaContainer {
+  position: relative;
+  height: 80px;
+}
+
+.textareaContainer textarea {
   margin: 0;
   border-radius: 0;
   height: 80px;
+}
+
+.textareaContainer .errorMessage {
+  position: absolute;
+  color: var(--red-400);
+  bottom: 8px;
+  right: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  pointer-events: none;
 }
 
 .ChordEditor {

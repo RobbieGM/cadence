@@ -21,7 +21,6 @@ async function getAllTracks(): Promise<TrackWithId[]> {
     // Cursor resolves to null when there are no records
     return [];
   }
-  cursor = await cursor.continue();
   const tracks: TrackWithId[] = [];
   while (cursor) {
     tracks.push({ ...cursor.value, id: cursor.key });

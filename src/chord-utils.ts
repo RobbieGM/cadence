@@ -83,6 +83,27 @@ export function parseChord(string: string): Chord | null {
   return { root, quality };
 }
 
+export class ChordParseError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ChordParseError";
+  }
+}
+
+export function parseChordProgression(string: string): Chord[] {
+  if (string.trim().length === 0) return [];
+  return string
+    .trim()
+    .split(/\s+/)
+    .map((chordString) => {
+      const chord = parseChord(chordString);
+      if (chord == null) {
+        throw new ChordParseError(`Unrecognized chord "${chordString}"`);
+      }
+      return chord;
+    });
+}
+
 const defaultQualities: ChordQuality[] = [
   "major",
   "diminished",
