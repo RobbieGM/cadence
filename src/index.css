@@ -69,6 +69,41 @@ button > svg {
   color: var(--gray-700);
 }
 
+button.icon-only {
+  background: transparent;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease-in;
+  box-shadow: 0 0 0 0 transparent;
+}
+
+@media (hover: hover) {
+  button.icon-only:hover {
+    transition: all 0.2s ease-out;
+    background: var(--gray-050);
+    box-shadow: 0 0 0 4px var(--gray-050);
+  }
+}
+
+button.icon-only:active {
+  transition: all 0.05s ease-out;
+  background: var(--gray-100);
+  box-shadow: 0 0 0 4px var(--gray-100);
+}
+
+button.icon-only > svg {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+}
+
+button.icon-only:active > svg {
+  color: black;
+}
+
 button.primary {
   background: var(--gray-800);
   color: white;

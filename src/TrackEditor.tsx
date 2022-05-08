@@ -1,32 +1,35 @@
 import { Component, createSignal, useContext } from "solid-js";
 import { DialogProps } from "./ModalDialogProvider";
-import { Track } from "./types";
+import { Track, TrackWithId } from "./types";
 
 import styles from "./TrackEditor.module.css";
 import { DatabaseContext } from "./DatabaseProvider";
+import ChordProgressionEditor from "./ChordProgressionEditor";
 
-function createTrackEditor(track: Track | null): Component<DialogProps> {
+function createTrackEditor(track: TrackWithId | null): Component<DialogProps> {
   return function TrackEditor(props) {
     const [name, setName] = createSignal(track?.name ?? "");
     const [tags, setTags] = createSignal(track?.tags?.join(", ") ?? "");
-    const [chords, setChords] = createSignal(track?.chords?.join(" ") ?? "");
-    const { addTrack } = useContext(DatabaseContext)!;
+    const [chords, setChords] = createSignal(track?.chords ?? []);
+    const [keySignature, setKeySignature] = createSignal(
+      track?.keySignature ?? 0
+    );
+    const { addTrack, updateTrack } = useContext(DatabaseContext)!;
     function save() {
+      const trackFromFormData: Track = {
+        name: name(),
+        tags: tags()
+          .split(",")
+          .map((s) => s.trim()),
+        chords: [
+          { root: 0, quality: "minor" },
+          { root: 5, quality: "major" },
+        ], // chords().split(" ").map((s) => s.trim()),
+      };
       if (track) {
-        // Overwrite
+        updateTrack(track.id, trackFromFormData);
       } else {
-        // Create
-        const newTrack: Track = {
-          name: name(),
-          tags: tags()
-            .split(",")
-            .map((s) => s.trim()),
-          chords: [
-            { root: 0, quality: "minor" },
-            { root: 5, quality: "major" },
-          ], // chords().split(" ").map((s) => s.trim()),
-        };
-        addTrack(newTrack);
+        addTrack(trackFromFormData);
       }
       props.close();
     }
@@ -50,15 +53,16 @@ function createTrackEditor(track: Track | null): Component<DialogProps> {
             onInput={(e) => setTags(e.currentTarget.value)}
           />
         </label>
-        <label>
-          Chords
-          <textarea
-            placeholder="Bm D F#m F#…"
-            spellcheck={false}
-            value={chords()}
-            onInput={(e) => setChords(e.currentTarget.value)}
-          ></textarea>
-        </label>
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+        <label for="chord-progression-editor">Chords</label>
+        <ChordProgressionEditor
+          chords={chords()}
+          setChords={setChords}
+          textareaId="chord-progression-editor"
+          placeholder="Bm D F#m F#…"
+          keySignature={keySignature()}
+          setKeySignature={setKeySignature}
+        />
         <menu>
           <button type="button" onClick={() => props.close()}>
             Cancel

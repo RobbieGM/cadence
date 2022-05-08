@@ -1,8 +1,21 @@
 .TrackList {
   display: grid;
-  grid-template-columns: repeat(3, 1fr) max-content;
+  grid-template-columns: repeat(2, 1fr) max-content;
   margin: 8px 16px;
   user-select: text;
+}
+
+.TrackList .chordsColumn {
+  display: none;
+}
+
+@media screen and (min-width: 768px) {
+  .TrackList {
+    grid-template-columns: repeat(3, 1fr) max-content;
+  }
+  .TrackList .chordsColumn {
+    display: block;
+  }
 }
 
 .label {
@@ -22,11 +35,17 @@
   margin-right: 4px;
 }
 
-div {
+.TrackList div {
   min-height: 24px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.TrackList .buttons {
+  overflow: visible; /* Otherwise button box-shadow is not visible */
+  display: flex;
+  align-items: center;
 }

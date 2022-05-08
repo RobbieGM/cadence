@@ -58,8 +58,10 @@ const ModalDialogProvider: Component = (props) => {
         onMouseDown={mouseDown}
       >
         {(() => {
-          const Dialog = dialog();
-          return Dialog ? <Dialog close={() => ref?.close()} /> : null;
+          const DialogComponent = dialog();
+          return DialogComponent ? (
+            <DialogComponent close={() => ref?.close()} />
+          ) : null;
         })()}
       </dialog>
     </ModalDialogContext.Provider>

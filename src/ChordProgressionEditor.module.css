@@ -1,0 +1,126 @@
+.ChordProgressionEditor {
+  display: flex;
+  flex-direction: column;
+  max-width: 360px; /* Piano keyboard gets ugly at larger sizes */
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.ChordProgressionEditor textarea {
+  margin: 0;
+  border-radius: 0;
+  height: 80px;
+}
+
+.ChordEditor {
+  display: contents;
+}
+
+.RootEditor {
+  display: flex;
+}
+
+.PianoKeyboard {
+  position: relative;
+  flex: 1;
+  aspect-ratio: 5;
+}
+
+.key {
+  position: absolute;
+  width: calc(100% / 7);
+  top: 0;
+  bottom: 0;
+  background: var(--gray-050);
+  height: unset;
+  border-radius: 0;
+}
+
+.key:active {
+  background: var(--gray-100);
+}
+
+.key.C {
+  left: 0;
+}
+.key.D {
+  left: calc(100% / 7);
+}
+.key.E {
+  left: calc(100% * 2 / 7);
+}
+.key.F {
+  left: calc(100% * 3 / 7);
+}
+.key.G {
+  left: calc(100% * 4 / 7);
+}
+.key.A {
+  left: calc(100% * 5 / 7);
+}
+.key.B {
+  left: calc(100% * 6 / 7);
+}
+
+.key.flat {
+  width: calc(100% / 7 * 2 / 3);
+  background-color: var(--gray-600);
+  transform: translateX(-50%);
+  bottom: 30%;
+  z-index: 1;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.key.flat:active {
+  background-color: var(--gray-700);
+}
+
+.key:not(.flat):not(:first-of-type) {
+  border-left: 1px solid var(--gray-600);
+}
+
+button.backspace {
+  width: 36px;
+  height: 100%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  height: initial;
+}
+
+button.backspace svg {
+  margin: 0;
+  width: 28px;
+  height: 28px;
+}
+
+.ChordQualitySelector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+}
+
+.ChordQualitySelector button {
+  border-radius: 0;
+  background: var(--gray-050);
+}
+
+.ChordQualitySelector button:active {
+  background: var(--gray-100);
+}
+
+.keySignatureSelector {
+  align-self: center;
+  margin: 4px;
+}
+
+.keySignatureSelector select {
+  border: none;
+  border-radius: 4px;
+  background: var(--gray-100);
+  padding: 4px;
+  font: inherit;
+  margin-left: 8px;
+}
