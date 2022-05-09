@@ -1,4 +1,4 @@
-import { Component, createEffect, For, useContext } from "solid-js";
+import { Component, For, useContext } from "solid-js";
 import { TrackWithId } from "./types";
 
 import styles from "./TrackList.module.css";
@@ -7,12 +7,14 @@ import Edit from "./icons/Edit";
 import Delete from "./icons/Delete";
 import { DatabaseContext } from "./DatabaseProvider";
 import { ModalDialogContext } from "./ModalDialogProvider";
-import createTrackEditor from "./TrackEditor";
+
+const trackEditorPromise = import("./TrackEditor");
 
 const TrackList: Component<{ tracks: TrackWithId[] }> = (props) => {
   const { showDialog } = useContext(ModalDialogContext)!;
   const { deleteTrack } = useContext(DatabaseContext)!;
-  function editTrack(track: TrackWithId) {
+  async function editTrack(track: TrackWithId) {
+    const { default: createTrackEditor } = await trackEditorPromise;
     const TrackEditor = createTrackEditor(track);
     showDialog((dialogProps) => <TrackEditor close={dialogProps.close} />);
   }
@@ -39,6 +41,7 @@ const TrackList: Component<{ tracks: TrackWithId[] }> = (props) => {
                 type="button"
                 class="icon-only"
                 onClick={() => editTrack(track)}
+                aria-label="Edit"
               >
                 <Edit />
               </button>
@@ -46,6 +49,7 @@ const TrackList: Component<{ tracks: TrackWithId[] }> = (props) => {
                 type="button"
                 class="icon-only"
                 onClick={() => deleteTrack(track.id)}
+                aria-label="Delete"
               >
                 <Delete />
               </button>

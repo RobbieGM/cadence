@@ -5,13 +5,15 @@ import { DatabaseContext } from "./DatabaseProvider";
 import Header from "./Header";
 import Plus from "./icons/Plus";
 import { ModalDialogContext } from "./ModalDialogProvider";
-import createTrackEditor from "./TrackEditor";
 import TrackList from "./TrackList";
+
+const trackEditorPromise = import("./TrackEditor");
 
 const App: Component = () => {
   const { tracks } = useContext(DatabaseContext)!;
   const { showDialog } = useContext(ModalDialogContext)!;
-  function addTrack() {
+  async function addTrack() {
+    const { default: createTrackEditor } = await trackEditorPromise;
     const TrackEditor = createTrackEditor(null);
     showDialog((props) => <TrackEditor close={props.close} />);
   }
