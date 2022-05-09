@@ -1,0 +1,55 @@
+.TagSelector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-height: 52px; /* Two rows + 4px gap */
+  overflow-y: auto;
+  padding: 2px;
+  margin-inline: -2px;
+}
+
+.TagSelector input[type="checkbox"] {
+  position: absolute;
+  appearance: none;
+  display: inline;
+}
+
+.container {
+  position: relative;
+}
+
+.Tag {
+  display: inline-block;
+  white-space: nowrap;
+  height: 24px;
+  line-height: 24px;
+  border-radius: 99px;
+  padding-inline: 8px;
+  background-color: var(--gray-050);
+}
+
+.Tag:hover {
+  background-color: var(--gray-100);
+}
+
+input[type="checkbox"]:checked + .Tag {
+  background-color: var(--gray-700);
+  color: white;
+}
+
+input[type="checkbox"]:checked + .Tag:hover {
+  background-color: var(--gray-600);
+}
+
+input[type="checkbox"]:focus-visible + .Tag {
+  outline: 2px solid var(--gray-700);
+  position: relative; /* To make sure the outline is visible */
+}
+
+.count {
+  color: var(--gray-600);
+}
+
+input[type="checkbox"]:checked + .Tag .count {
+  color: var(--gray-100);
+}

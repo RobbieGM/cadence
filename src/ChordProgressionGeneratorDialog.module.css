@@ -1,0 +1,11 @@
+.ChordProgressionGeneratorDialog fieldset {
+  border: none;
+  padding: 0;
+  margin-block-end: 16px;
+}
+
+.ChordProgressionGeneratorDialog fieldset legend {
+  font-size: 0.87rem;
+  font-weight: 500;
+  padding: 0;
+}

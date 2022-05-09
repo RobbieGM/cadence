@@ -1,4 +1,4 @@
-import { Component, Show, useContext } from "solid-js";
+import { Component, lazy, Show, useContext } from "solid-js";
 import styles from "./App.module.css";
 import noData from "./assets/no_data.svg";
 import { DatabaseContext } from "./DatabaseProvider";
@@ -10,6 +10,9 @@ import TrackList from "./TrackList";
 const trackEditorPromise = import("./TrackEditor");
 
 const App: Component = () => {
+  const ChordProgressionGeneratorDialog = lazy(
+    () => import("./ChordProgressionGeneratorDialog")
+  );
   const { tracks } = useContext(DatabaseContext)!;
   const { showDialog } = useContext(ModalDialogContext)!;
   async function addTrack() {
@@ -21,9 +24,7 @@ const App: Component = () => {
     <div class={styles.App}>
       <Header
         add={addTrack}
-        generate={() =>
-          showDialog(() => "This functionality not implemented yet.")
-        }
+        generate={() => showDialog(ChordProgressionGeneratorDialog)}
       />
       <Show when={tracks()}>
         <Show
