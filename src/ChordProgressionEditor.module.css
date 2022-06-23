@@ -15,6 +15,8 @@
   margin: 0;
   border-radius: 0;
   height: 80px;
+  resize: none;
+  width: 100%;
 }
 
 .textareaContainer .errorMessage {
@@ -124,6 +126,12 @@ button.backspace svg {
 
 .ChordQualitySelector button:active {
   background: var(--gray-100);
+}
+
+@media screen and (max-width: 380px) {
+  .keySignatureLabel {
+    display: none;
+  }
 }
 
 .keySignatureSelector {

@@ -9,7 +9,7 @@
   transform: translateY(100%);
   display: block;
   position: fixed;
-  transition: all 0.2s ease-in;
+  transition: opacity 0.2s ease-in, transform 0.2s ease-in, visibility 0.2s ease-in;
   opacity: 0;
   inset-block: 0;
   margin-bottom: 16px;
@@ -17,7 +17,7 @@
 }
 
 .Dialog[open] {
-  transition-timing-function: ease-out;
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s ease-out;
   transform: none;
   visibility: visible;
   opacity: 1;
@@ -28,12 +28,18 @@
   animation: backdrop-fade 0.1s ease-out forwards;
 }
 
+.Dialog menu {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 @keyframes backdrop-fade {
   from {
-    background: transparent;
+    opacity: 0;
   }
   to {
-    background: rgba(0, 0, 0, 0.1);
+    opacity: 1;
   }
 }
 

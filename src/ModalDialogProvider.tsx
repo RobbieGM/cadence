@@ -44,8 +44,11 @@ const ModalDialogProvider: Component = (props) => {
     <ModalDialogContext.Provider
       value={{
         showDialog(newDialog: Dialog) {
+          console.debug("showDialog");
           setDialog(() => newDialog);
-          ref?.showModal();
+          requestIdleCallback(() => {
+            ref?.showModal();
+          });
         },
       }}
     >

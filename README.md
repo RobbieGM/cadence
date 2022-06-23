@@ -7,16 +7,14 @@ A simple web app to help composers get inspired for where their piece could go n
 - PWA, usable offline
 - Data is saved client-side but can be exported for sharing
 - Chords are quick to input
-    - MIDI keyboard support
+  - MIDI keyboard support
 - Each track can be assigned tags
 - Output is generated with Markov chains or some more advanced model
-    - Training data is selected by tags or by individual tracks
+  - Training data is selected by tags or by individual tracks
 - No server should be necessary
-
-## Tech stack
-
-- SolidJS
-- 
+- Select "all" for tags
+- Reorder key signature selector
+- Fix pasting: "Am C" + "D Em" = "Am C D Em" not "Am CD Em"
 
 ## Usage
 

@@ -146,12 +146,13 @@ const ChordProgressionEditor: Component<Props> = (props) => {
   }
   function backspace() {
     if (!textarea) return;
-    if (textarea.selectionStart === 0 && textarea.selectionEnd === 0) return;
-    let before = textarea.value.substring(0, textarea.selectionStart);
-    let after = textarea.value.substring(textarea.selectionEnd);
+    const [selectionStart, selectionEnd] = document.activeElement === textarea ? [textarea.selectionStart, textarea.selectionEnd] : [textarea.value.length, textarea.value.length];
+    if (selectionStart === 0 && selectionEnd === 0) return;
+    let before = textarea.value.substring(0, selectionStart);
+    let after = textarea.value.substring(selectionEnd);
     before = removeLastWord(before);
     after = removeFirstWord(after);
-    updateText(`${before} ${after}`);
+    updateText(`${before}${after.length !== 0 ? " " : ""}${after}`);
     textarea.setSelectionRange(before.length, before.length);
   }
   // Inserts a chord with the default quality given the key signature
@@ -162,30 +163,31 @@ const ChordProgressionEditor: Component<Props> = (props) => {
       backspace();
     }
     function getCursor() {
-      const before = textarea!.value.substring(0, textarea!.selectionEnd);
-      const after = textarea!.value.substring(textarea!.selectionEnd);
-      const atStart = textarea!.selectionEnd === 0;
-      const atEnd = textarea!.selectionEnd === textarea!.value.length;
-      return { before, after, atStart, atEnd };
+      const cursorPosition = document.activeElement === textarea ? textarea!.selectionEnd : textarea!.value.length;
+      const textBefore = textarea!.value.substring(0, cursorPosition);
+      const textAfter = textarea!.value.substring(cursorPosition);
+      const atStart = cursorPosition === 0;
+      const atEnd = cursorPosition === textarea!.value.length;
+      return { textBefore, textAfter, atStart, atEnd };
     }
     const cursor = getCursor();
     const betweenChords =
-      cursor.before.endsWith(" ") ||
-      cursor.after.startsWith(" ") ||
+      cursor.textBefore.endsWith(" ") ||
+      cursor.textAfter.startsWith(" ") ||
       cursor.atStart ||
       cursor.atEnd;
     function insert() {
       // Update before and after in case backspace was called
-      const { before, after, atStart, atEnd } = getCursor();
+      const { textBefore, textAfter, atStart, atEnd } = getCursor();
       const quality = getDefaultQuality(root, props.keySignature);
       const chordString = chordToString({ root, quality }, props.keySignature);
       const spaceBefore = atStart ? "" : " ";
       const spaceAfter = atEnd ? "" : " ";
       updateText(
-        `${before.trim()}${spaceBefore}${chordString}${spaceAfter}${after.trim()}`
+        `${textBefore.trim()}${spaceBefore}${chordString}${spaceAfter}${textAfter.trim()}`
       );
       const cursorPosition =
-        before.trim().length + spaceBefore.length + chordString.length;
+        textBefore.trim().length + spaceBefore.length + chordString.length;
       textarea!.setSelectionRange(cursorPosition, cursorPosition);
     }
     if (betweenChords) {
@@ -281,12 +283,13 @@ const ChordProgressionEditor: Component<Props> = (props) => {
         </div>
       </div>
       <label class={styles.keySignatureSelector}>
-        Key signature
+        <span class={styles.keySignatureLabel}>Key signature</span>
         <select
           value={props.keySignature}
           onInput={(e) =>
             props.setKeySignature(parseInt(e.currentTarget.value, 10))
           }
+          aria-label="Key signature"
         >
           <option value={0}>No sharps/flats (C/Am)</option>
           <option value={1}>One sharp (G/Em)</option>
