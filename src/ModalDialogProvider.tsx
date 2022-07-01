@@ -2,6 +2,7 @@ import { createContext, createSignal } from "solid-js";
 import type { Component } from "solid-js";
 
 import styles from "./ModalDialogProvider.module.css";
+import { Dynamic } from "solid-js/web";
 
 export interface DialogProps {
   close(): void;
@@ -44,7 +45,6 @@ const ModalDialogProvider: Component = (props) => {
     <ModalDialogContext.Provider
       value={{
         showDialog(newDialog: Dialog) {
-          console.debug("showDialog");
           setDialog(() => newDialog);
           requestIdleCallback(() => {
             ref?.showModal();
@@ -60,12 +60,7 @@ const ModalDialogProvider: Component = (props) => {
         onTouchStart={mouseDown}
         onMouseDown={mouseDown}
       >
-        {(() => {
-          const DialogComponent = dialog();
-          return DialogComponent ? (
-            <DialogComponent close={() => ref?.close()} />
-          ) : null;
-        })()}
+        <Dynamic component={dialog()} close={() => ref?.close()} />
       </dialog>
     </ModalDialogContext.Provider>
   );

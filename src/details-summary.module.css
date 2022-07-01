@@ -1,0 +1,4 @@
+.indented {
+  border-left: 2px solid var(--gray-200);
+  padding-left: 8px;
+}

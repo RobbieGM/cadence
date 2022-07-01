@@ -3,21 +3,25 @@
   padding: 1.5rem;
   user-select: none;
   max-width: calc(100vw - 32px);
+  max-height: calc(100% - 40px);
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   border-radius: 8px;
   visibility: hidden;
   transform: translateY(100%);
   display: block;
   position: fixed;
-  transition: opacity 0.2s ease-in, transform 0.2s ease-in, visibility 0.2s ease-in;
+  transition: opacity 0.2s ease-in, transform 0.2s ease-in,
+    visibility 0.2s ease-in;
   opacity: 0;
   inset-block: 0;
   margin-bottom: 16px;
   width: 100%;
+  will-change: transform;
 }
 
 .Dialog[open] {
-  transition: opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s ease-out;
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out,
+    visibility 0.2s ease-out;
   transform: none;
   visibility: visible;
   opacity: 1;
@@ -48,6 +52,7 @@
   .Dialog:not([open]) {
     margin-bottom: auto;
     width: fit-content;
+    max-width: 624px;
     transition-duration: 0.15s;
   }
 

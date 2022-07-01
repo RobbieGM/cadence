@@ -1,0 +1,27 @@
+.ProgressBar {
+  position: relative;
+  height: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.label {
+  position: absolute;
+  inset: 0;
+  text-align: center;
+  line-height: 1rem;
+  text-shadow: -1px -1px white, -1px 1px white, 1px -1px white, 1px 1px white;
+}
+
+.ProgressBar[aria-valuenow="indeterminate"] .backgroundRect {
+  animation: pulse 0.75s alternate ease-in-out infinite;
+}
+
+@keyframes pulse {
+  from {
+    fill: var(--gray-100);
+  }
+  to {
+    fill: var(--gray-200);
+  }
+}

@@ -10,9 +10,7 @@ import TrackList from "./TrackList";
 const trackEditorPromise = import("./TrackEditor");
 
 const App: Component = () => {
-  const ChordProgressionGeneratorDialog = lazy(
-    () => import("./ChordProgressionGeneratorDialog")
-  );
+  const ModelTrainerDialog = lazy(() => import("./ModelTrainerDialog"));
   const { tracks } = useContext(DatabaseContext)!;
   const { showDialog } = useContext(ModalDialogContext)!;
   async function addTrack() {
@@ -22,10 +20,7 @@ const App: Component = () => {
   }
   return (
     <div class={styles.App}>
-      <Header
-        add={addTrack}
-        generate={() => showDialog(ChordProgressionGeneratorDialog)}
-      />
+      <Header add={addTrack} generate={() => showDialog(ModelTrainerDialog)} />
       <Show when={tracks()}>
         <Show
           when={tracks()!.length > 0}

@@ -2,19 +2,36 @@
 
 A simple web app to help composers get inspired for where their piece could go next harmonically. Cadence generates or completes chord progressions based on existing music, allowing for organization by style or mood.
 
-## Goals and specifications
+## Goals, specifications, TODO
 
 - PWA, usable offline
 - Data is saved client-side but can be exported for sharing
-- Chords are quick to input
-  - MIDI keyboard support
-- Each track can be assigned tags
-- Output is generated with Markov chains or some more advanced model
-  - Training data is selected by tags or by individual tracks
+- Output is generated with Markov chains or LSTM
+  - Training data is selected by tags
 - No server should be necessary
-- Select "all" for tags
 - Reorder key signature selector
 - Fix pasting: "Am C" + "D Em" = "Am C D Em" not "Am CD Em"
+- Give invalid chords a highlight somehow rather than just saying they exist
+  - "Unrecognized chord" warning obscures text anyway
+- Don't close modal accidentally if there is unsaved data
+- Zero-margin dialogs on mobile
+- Prerender modal dialogs for better opening perf (probably get rid of ModalDialogProvider and replace with individuals)
+  - This should fix the related bug where lazy-loading modal content causes layout shift
+  - May also fix bug where after cancelling training it appears to resume if you open training dialog again
+- Allow for time for train model dialog to close before opening chord generator dialog, or open the latter on top
+- Save and load models
+- Persistent model settings
+- Enter within textarea should submit form to add/edit track
+- Keyboard shortcuts for "add music", "generate chords"
+- Persist tags between adding one track to the next
+- Make chord progression editor non-keyboard-accessible (apart from text box)?
+- Display newest first
+- Eliminate gap between "Chords" label and textarea in ChordProgressionGeneratorDialog
+- Make widths as low as 320px work (currently there is a horizontal scrollbar)
+- Disallow chord generation before any tracks are there (animate "add track" button)
+- Invisible commas between tags for text selection
+- Well-defined height for clipboard image in empty state so it doesn't cause layout shift
+- TensorFlow bundle size reduction (there's a tutorial on this somewhere)
 
 ## Usage
 

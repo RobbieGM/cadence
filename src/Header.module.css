@@ -10,14 +10,15 @@
   top: 0;
 }
 
-h1 {
+.Header h1 {
   font-size: 1.5rem;
   line-height: 1em;
 }
 
-section {
+.Header section {
   display: flex;
   gap: 8px;
+  flex-direction: row;
 }
 
 @media screen and (max-width: 450px) {
@@ -32,7 +33,7 @@ section {
     padding-inline: 32px;
   }
 
-  h1 {
+  .Header h1 {
     font-size: 2rem;
   }
 }
