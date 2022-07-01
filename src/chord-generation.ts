@@ -140,28 +140,19 @@ export class Model {
     });
   }
 
-  private nextAnimationFrame() {
-    // return new Promise((res) => requestAnimationFrame(res));
-    return new Promise((res) => setTimeout(res, 1000));
-  }
-
   async train(
     tracks: Track[],
     onProgress: (progress: number | "indeterminate", text: string) => void
   ) {
     onProgress("indeterminate", "Creating model…");
-    await this.nextAnimationFrame();
     const model = await this.model;
     onProgress("indeterminate", "Compiling model…");
-    await this.nextAnimationFrame();
     const tf = await getTf();
     const optimizer = tf.train.adam(this.modelSettings.learningRate);
     model.compile({ optimizer, loss: "categoricalCrossentropy" });
     onProgress("indeterminate", "Preparing data…");
-    await this.nextAnimationFrame();
     const augmentedTracks = transposeToAllRoots(tracks);
     onProgress(0, "Training…");
-    await this.nextAnimationFrame();
     const [xs, ys] = makeXY(tf, this.modelSettings.windowSize, augmentedTracks);
     const numExamples = ys.shape[0] * this.modelSettings.epochs;
     const totalBatches = Math.ceil(
