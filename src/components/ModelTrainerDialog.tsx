@@ -5,13 +5,13 @@ import {
   Show,
   useContext,
 } from "solid-js";
-import { Model, preloadTensorflow } from "./chord-generation";
+import { Model, preloadTensorflow } from "../chord-generation";
 import styles from "./ModelTrainerDialog.module.css";
-import detailsSummary from "./details-summary.module.css";
+import detailsSummary from "../styles/details-summary.module.css";
 import { DatabaseContext } from "./DatabaseProvider";
 import { Dialog, ModalDialogContext } from "./ModalDialogProvider";
 import TagSelector, { Tag } from "./TagSelector";
-import { Track } from "./types";
+import { Track } from "../types";
 import ProgressBar from "./ProgressBar";
 import createChordProgressionGeneratorDialog from "./ChordProgressionGeneratorDialog";
 

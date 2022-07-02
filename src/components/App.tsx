@@ -1,9 +1,9 @@
 import { Component, lazy, Show, useContext } from "solid-js";
 import styles from "./App.module.css";
-import noData from "./assets/no_data.svg";
+import noData from "../assets/no_data.svg";
 import { DatabaseContext } from "./DatabaseProvider";
 import Header from "./Header";
-import Plus from "./icons/Plus";
+import Plus from "../icons/Plus";
 import { ModalDialogContext } from "./ModalDialogProvider";
 import TrackList from "./TrackList";
 

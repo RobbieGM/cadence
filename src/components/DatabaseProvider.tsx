@@ -1,6 +1,6 @@
 import { DBSchema, openDB } from "idb";
 import { Component, createContext, createResource, Resource } from "solid-js";
-import { Track, TrackWithId } from "./types";
+import { Track, TrackWithId } from "../types";
 
 interface Schema extends DBSchema {
   tracks: { key: number; value: Track };

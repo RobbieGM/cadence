@@ -1,6 +1,6 @@
 import { Component, createSignal, useContext } from "solid-js";
 import { DialogProps } from "./ModalDialogProvider";
-import { Chord, Track, TrackWithId } from "./types";
+import { Track, TrackWithId } from "../types";
 
 import styles from "./TrackEditor.module.css";
 import { DatabaseContext } from "./DatabaseProvider";

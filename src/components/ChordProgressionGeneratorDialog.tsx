@@ -1,11 +1,11 @@
 import { Dialog } from "./ModalDialogProvider";
 import ChordProgressionEditor from "./ChordProgressionEditor";
 import { createSignal, Show } from "solid-js";
-import { Chord } from "./types";
+import { Chord } from "../types";
 import styles from "./ChordProgressionGeneratorDialog.module.css";
-import detailsSummary from "./details-summary.module.css";
-import { Model } from "./chord-generation";
-import { chordToString } from "./chord-utils";
+import detailsSummary from "../styles/details-summary.module.css";
+import { Model } from "../chord-generation";
+import { chordToString } from "../chord-utils";
 import { nanoid } from "nanoid/non-secure";
 
 const createChordProgressionGeneratorDialog =

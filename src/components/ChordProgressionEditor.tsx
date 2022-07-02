@@ -7,16 +7,16 @@ import {
   getDefaultQuality,
   parseChord,
   parseChordProgression,
-} from "./chord-utils";
+} from "../chord-utils";
 import styles from "./ChordProgressionEditor.module.css";
-import Backspace from "./icons/Backspace";
+import Backspace from "../icons/Backspace";
 import {
   AbsoluteNote,
   Chord,
   chordQualities,
   ChordQuality,
   KeySignature,
-} from "./types";
+} from "../types";
 
 const cx = classNames.bind(styles);
 
@@ -146,7 +146,10 @@ const ChordProgressionEditor: Component<Props> = (props) => {
   }
   function backspace() {
     if (!textarea) return;
-    const [selectionStart, selectionEnd] = document.activeElement === textarea ? [textarea.selectionStart, textarea.selectionEnd] : [textarea.value.length, textarea.value.length];
+    const [selectionStart, selectionEnd] =
+      document.activeElement === textarea
+        ? [textarea.selectionStart, textarea.selectionEnd]
+        : [textarea.value.length, textarea.value.length];
     if (selectionStart === 0 && selectionEnd === 0) return;
     let before = textarea.value.substring(0, selectionStart);
     let after = textarea.value.substring(selectionEnd);
@@ -163,7 +166,10 @@ const ChordProgressionEditor: Component<Props> = (props) => {
       backspace();
     }
     function getCursor() {
-      const cursorPosition = document.activeElement === textarea ? textarea!.selectionEnd : textarea!.value.length;
+      const cursorPosition =
+        document.activeElement === textarea
+          ? textarea!.selectionEnd
+          : textarea!.value.length;
       const textBefore = textarea!.value.substring(0, cursorPosition);
       const textAfter = textarea!.value.substring(cursorPosition);
       const atStart = cursorPosition === 0;

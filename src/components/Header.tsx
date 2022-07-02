@@ -1,8 +1,8 @@
 import type { Component } from "solid-js";
 
 import styles from "./Header.module.css";
-import Plus from "./icons/Plus";
-import Run from "./icons/Run";
+import Plus from "../icons/Plus";
+import Run from "../icons/Run";
 
 interface Props {
   add: () => void;

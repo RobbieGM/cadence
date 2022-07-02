@@ -1,10 +1,10 @@
 import { Component, For, useContext } from "solid-js";
-import { TrackWithId } from "./types";
+import { TrackWithId } from "../types";
 
 import styles from "./TrackList.module.css";
-import { chordsToString } from "./chord-utils";
-import Edit from "./icons/Edit";
-import Delete from "./icons/Delete";
+import { chordsToString } from "../chord-utils";
+import Edit from "../icons/Edit";
+import Delete from "../icons/Delete";
 import { DatabaseContext } from "./DatabaseProvider";
 import { ModalDialogContext } from "./ModalDialogProvider";
 

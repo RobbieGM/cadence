@@ -1,10 +1,10 @@
 /* @refresh reload */
 import { ErrorBoundary, render } from "solid-js/web";
-import App from "./App";
-import DatabaseProvider from "./DatabaseProvider";
-import "./index.css";
+import App from "./components/App";
+import DatabaseProvider from "./components/DatabaseProvider";
+import "./styles/index.css";
 import "requestidlecallback-polyfill"; // https://caniuse.com/requestidlecallback
-import ModalDialogProvider from "./ModalDialogProvider";
+import ModalDialogProvider from "./components/ModalDialogProvider";
 
 render(
   () => (
