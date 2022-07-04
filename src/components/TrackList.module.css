@@ -12,7 +12,7 @@
 
 @media screen and (min-width: 768px) {
   .TrackList {
-    grid-template-columns: repeat(3, 1fr) max-content;
+    grid-template-columns: repeat(2, 2fr) 3fr max-content;
   }
   .TrackList .chordsColumn {
     display: -webkit-box;

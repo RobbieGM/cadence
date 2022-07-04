@@ -1,22 +1,31 @@
 import { Dialog } from "./ModalDialogProvider";
 import ChordProgressionEditor from "./ChordProgressionEditor";
-import { createSignal, Show } from "solid-js";
+import { createResource, createSignal, Show, useContext } from "solid-js";
 import { Chord } from "../types";
 import styles from "./ChordProgressionGeneratorDialog.module.css";
 import detailsSummary from "../styles/details-summary.module.css";
 import { Model } from "../chord-generation";
 import { chordToString } from "../chord-utils";
 import { nanoid } from "nanoid/non-secure";
+import { DatabaseContext } from "./DatabaseProvider";
+import classNames from "classnames";
 
 const createChordProgressionGeneratorDialog =
   (model: Model): Dialog =>
-  (props) => {
+  () => {
+    const { saveModel } = useContext(DatabaseContext)!;
+    const [savedModelName, { refetch: updateModelName }] = createResource(() =>
+      model.getName()
+    );
     const [beginningChords, setBeginningChords] = createSignal([] as Chord[]);
     const [keySignature, setKeySignature] = createSignal(0);
     const [distributionExponent, setDistributionExponent] = createSignal(2);
     const distributionExponentInputId = nanoid();
     const [output, setOutput] = createSignal([] as Chord[]);
     const textareaId = nanoid();
+    const outputId = nanoid();
+    const modelNameInputId = nanoid();
+    const [modelNameInput, setModelNameInput] = createSignal("");
     async function generate() {
       setOutput([]);
       for await (const chord of model.generate(
@@ -32,7 +41,7 @@ const createChordProgressionGeneratorDialog =
         <h2>Generate chords</h2>
         <section>
           <label for={textareaId}>Beginning sequence</label>
-          <p>
+          <p class={styles.beginningSequenceDescription}>
             The AI will predict what might come next in this sequence, based on
             the tracks you selected.
           </p>
@@ -71,19 +80,49 @@ const createChordProgressionGeneratorDialog =
             />
           </div>
         </details>
-        <output>
+        <button
+          class={classNames("primary", styles.generateButton)}
+          onClick={generate}
+        >
+          Generate
+        </button>
+        <label for={outputId}>Output</label>
+        <output id={outputId}>
           <Show when={output().length} fallback="Output will appear here">
             {output()
               .map((chord) => chordToString(chord, keySignature()))
               .join(" ")}
           </Show>
         </output>
-        <menu>
-          <button onClick={() => props.close()}>Cancel</button>
-          <button class="primary" onClick={generate}>
-            Generate
-          </button>
-        </menu>
+        {savedModelName() == null ? (
+          <>
+            <p>
+              Like the results? You can save this model to use it later without
+              re-training.
+            </p>
+            <form
+              class={styles.saveWidget}
+              onSubmit={async (e) => {
+                e.preventDefault();
+                await saveModel(model, modelNameInput());
+                updateModelName();
+              }}
+            >
+              <input
+                type="text"
+                required
+                placeholder="Model name"
+                aria-label="Model name"
+                value={modelNameInput()}
+                id={modelNameInputId}
+                onChange={(e) => setModelNameInput(e.currentTarget.value)}
+              />
+              <button type="submit">Save</button>
+            </form>
+          </>
+        ) : (
+          <p>Model saved as &ldquo;{savedModelName()}&rdquo;</p>
+        )}
       </div>
     );
   };

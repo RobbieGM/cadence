@@ -1,0 +1,67 @@
+.wrapper {
+  position: relative;
+}
+
+.dropdown {
+  position: absolute;
+  background: white;
+  right: 0;
+  border-radius: 4px;
+  width: 280px;
+  top: calc(100% + 8px);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  transition: opacity 0.1s, transform 0.1s;
+  transform-origin: top right;
+}
+
+.animateFrom {
+  opacity: 0;
+  transition-timing-function: linear;
+  transform: scale(0.95);
+}
+
+.animateTo {
+  opacity: 1;
+  transition-timing-function: ease-out;
+}
+
+.trainButton {
+  width: 100%;
+  height: 40px;
+  justify-content: center;
+}
+
+.dropdown li {
+  display: flex;
+  list-style-type: none;
+}
+
+.useModelButton {
+  background: transparent;
+  border-radius: 0;
+  flex: 1;
+  height: auto;
+  min-height: 32px;
+  padding-block: 8px;
+  text-align: left;
+  white-space: revert;
+  transition-duration: 0s;
+}
+
+.useModelButton:active,
+.useModelButton:focus-visible {
+  background: var(--gray-050);
+  outline: none;
+}
+
+.deleteButton {
+  box-shadow: none !important;
+  align-self: center;
+  transition-duration: 0s !important;
+}
+
+@media (hover: hover) {
+  .dropdown li:not(:hover):not(:focus-within) .deleteButton {
+    visibility: hidden;
+  }
+}

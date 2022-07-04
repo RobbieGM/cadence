@@ -1,12 +1,10 @@
 import type { Component } from "solid-js";
-
 import styles from "./Header.module.css";
 import Plus from "../icons/Plus";
-import Run from "../icons/Run";
+import GenerateChordsMenu from "./GenerateChordsMenu";
 
 interface Props {
   add: () => void;
-  generate: () => void;
 }
 
 const Header: Component<Props> = (props) => (
@@ -19,10 +17,7 @@ const Header: Component<Props> = (props) => (
         <Plus />
         Add<span class={styles.hideWhenSmall}>&nbsp;music</span>
       </button>
-      <button type="button" onClick={() => props.generate()}>
-        <Run />
-        Generate chords
-      </button>
+      <GenerateChordsMenu />
     </section>
   </header>
 );

@@ -117,27 +117,47 @@ export class Model {
   static TrainingCancelledError = class extends Error {};
   private model: Promise<Sequential>;
   private trained = false;
+  private name?: string;
   modelSettings: ModelSettings;
 
-  constructor(modelSettings = defaultModelSettings) {
-    this.modelSettings = modelSettings;
-    this.model = getTf().then((tf) => {
-      const model = tf.sequential();
-      model.add(
-        tf.layers.lstm({
-          units: modelSettings.layerSize,
-          returnSequences: false,
-          inputShape: [modelSettings.windowSize, DIMENSIONALITY],
-        })
+  /**
+   * Create a new model
+   */
+  constructor(modelSettings: ModelSettings);
+  /**
+   * Load a model from indexedDB.
+   */
+  constructor(name: string);
+
+  constructor(firstArg: ModelSettings | string) {
+    if (typeof firstArg === "string") {
+      this.name = firstArg;
+      this.modelSettings = defaultModelSettings;
+      this.model = getTf().then(
+        (tf) =>
+          tf.loadLayersModel(`indexeddb://${this.name}`) as Promise<Sequential>
       );
-      model.add(
-        tf.layers.dense({
-          units: DIMENSIONALITY,
-          activation: "softmax",
-        })
-      );
-      return model;
-    });
+    } else {
+      const modelSettings = firstArg;
+      this.modelSettings = modelSettings;
+      this.model = getTf().then((tf) => {
+        const model = tf.sequential();
+        model.add(
+          tf.layers.lstm({
+            units: modelSettings.layerSize,
+            returnSequences: false,
+            inputShape: [modelSettings.windowSize, DIMENSIONALITY],
+          })
+        );
+        model.add(
+          tf.layers.dense({
+            units: DIMENSIONALITY,
+            activation: "softmax",
+          })
+        );
+        return model;
+      });
+    }
   }
 
   async train(
@@ -186,6 +206,10 @@ export class Model {
 
   hasBeenTrained() {
     return this.trained;
+  }
+
+  getName() {
+    return this.name;
   }
 
   async cancelTraining() {
@@ -244,5 +268,13 @@ export class Model {
       input.shift();
       input.push(chordToInt(nextChord));
     }
+  }
+
+  /**
+   * Saves the model. Don't call this directly--use DatabaseProvider interface to ensure that list of models is in sync.
+   */
+  async save(name: string) {
+    await (await this.model).save(`indexeddb://${name}`);
+    this.name = name;
   }
 }

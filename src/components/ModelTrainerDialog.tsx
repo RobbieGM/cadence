@@ -5,7 +5,11 @@ import {
   Show,
   useContext,
 } from "solid-js";
-import { Model, preloadTensorflow } from "../chord-generation";
+import {
+  defaultModelSettings,
+  Model,
+  preloadTensorflow,
+} from "../chord-generation";
 import styles from "./ModelTrainerDialog.module.css";
 import detailsSummary from "../styles/details-summary.module.css";
 import { DatabaseContext } from "./DatabaseProvider";
@@ -56,7 +60,7 @@ const ModelTrainerDialog: Dialog = (props) => {
     preloadTensorflow();
   });
   async function train() {
-    setModel(new Model());
+    setModel(new Model(defaultModelSettings));
     try {
       await model()!.train(selectedTracks(), (newProgress, text) => {
         setProgress(() => newProgress);
@@ -68,6 +72,7 @@ const ModelTrainerDialog: Dialog = (props) => {
       if (!(e instanceof Model.TrainingCancelledError)) {
         setProgress(0);
         setProgressBarText("Error; try again.");
+        setModel(undefined);
         throw e;
       }
     }
@@ -135,6 +140,7 @@ const ModelTrainerDialog: Dialog = (props) => {
         <button onClick={cancel}>Cancel</button>
         <button
           class="primary"
+          disabled={model() != null}
           onClick={() => {
             if (selectedTracks().length === 0) {
               setShowMustSelectTracksHint(true);

@@ -4,8 +4,13 @@
   gap: 8px;
 }
 
-.ChordProgressionGeneratorDialog p {
-  margin-block-end: 8px;
+.beginningSequenceDescription {
+  margin-block-end: 4px;
+}
+
+.generateButton {
+  align-self: flex-start;
+  margin-bottom: 16px;
 }
 
 .ChordProgressionGeneratorDialog output {
@@ -15,4 +20,19 @@
   user-select: text;
   line-height: 1;
   min-height: 32px; /* For when momentarily empty */
+}
+
+.saveWidget {
+  display: flex;
+}
+
+.saveWidget input[type="text"] {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.saveWidget button {
+  height: 40px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 }

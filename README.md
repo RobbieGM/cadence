@@ -19,7 +19,7 @@ A simple web app to help composers get inspired for where their piece could go n
   - This should fix the related bug where lazy-loading modal content causes layout shift
   - May also fix bug where after cancelling training it appears to resume if you open training dialog again
 - Allow for time for train model dialog to close before opening chord generator dialog, or open the latter on top
-- Save and load models
+- Save and load tracks (to and from downloads)
 - Persistent model settings
 - Enter within textarea should submit form to add/edit track
 - Keyboard shortcuts for "add music", "generate chords"
@@ -32,6 +32,7 @@ A simple web app to help composers get inspired for where their piece could go n
 - Invisible commas between tags for text selection
 - Well-defined height for clipboard image in empty state so it doesn't cause layout shift
 - TensorFlow bundle size reduction (there's a tutorial on this somewhere)
+- navigator.storage.persist
 
 ## Usage
 
