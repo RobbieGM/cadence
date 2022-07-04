@@ -297,6 +297,12 @@ const ChordProgressionEditor: Component<Props> = (props) => {
           }
           aria-label="Key signature"
         >
+          <option value={-6}>Six flats (G♭/E♭m)</option>
+          <option value={-5}>Five flats (D♭/B♭m)</option>
+          <option value={-4}>Four flats (A♭/Fm)</option>
+          <option value={-3}>Three flats (E♭/Cm)</option>
+          <option value={-2}>Two flats (B♭/Gm)</option>
+          <option value={-1}>One flat (F/Dm)</option>
           <option value={0}>No sharps/flats (C/Am)</option>
           <option value={1}>One sharp (G/Em)</option>
           <option value={2}>Two sharps (D/Bm)</option>
@@ -304,12 +310,6 @@ const ChordProgressionEditor: Component<Props> = (props) => {
           <option value={4}>Four sharps (E/C♯m)</option>
           <option value={5}>Five sharps (B/G♯m)</option>
           <option value={6}>Six sharps (F♯/D♯m)</option>
-          <option value={-1}>One flat (F/Dm)</option>
-          <option value={-2}>Two flats (B♭/Gm)</option>
-          <option value={-3}>Three flats (E♭/Cm)</option>
-          <option value={-4}>Four flats (A♭/Fm)</option>
-          <option value={-5}>Five flats (D♭/B♭m)</option>
-          <option value={-6}>Six flats (G♭/E♭m)</option>
         </select>
       </label>
     </div>

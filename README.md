@@ -9,7 +9,6 @@ A simple web app to help composers get inspired for where their piece could go n
 - Output is generated with Markov chains or LSTM
   - Training data is selected by tags
 - No server should be necessary
-- Reorder key signature selector
 - Fix pasting: "Am C" + "D Em" = "Am C D Em" not "Am CD Em"
 - Give invalid chords a highlight somehow rather than just saying they exist
   - "Unrecognized chord" warning obscures text anyway
