@@ -7,8 +7,7 @@
   gap: 8px;
 }
 
-.TrackEditor input,
-.TrackEditor textarea {
+.TrackEditor input {
   margin-top: 4px;
   width: 100%;
 }

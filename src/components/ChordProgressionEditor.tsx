@@ -125,7 +125,7 @@ const ChordProgressionEditor: Component<Props> = (props) => {
       }
     });
   }
-  function onTextareaInput() {
+  function onTextareaInput(e: InputEvent) {
     if (!textarea) return;
     const before = textarea.value.substring(0, textarea.selectionStart);
     const inside = textarea.value.substring(
@@ -143,6 +143,20 @@ const ChordProgressionEditor: Component<Props> = (props) => {
       beforeCorrected.length,
       beforeCorrected.length + insideCorrected.length
     );
+  }
+  function onPaste(e: ClipboardEvent) {
+    const before = textarea!.value.substring(0, textarea!.selectionStart);
+    const after = textarea!.value.substring(textarea!.selectionEnd);
+    let content = e.clipboardData!.getData("text");
+    if (!content.startsWith(" ") && !before.endsWith(" "))
+      content = " " + content;
+    if (!content.endsWith(" ") && !after.startsWith(" ")) content += " ";
+    updateText(`${before}${content}${after}`);
+    textarea!.setSelectionRange(
+      before.length + content.length,
+      before.length + content.length
+    );
+    e.preventDefault();
   }
   function backspace() {
     if (!textarea) return;
@@ -239,6 +253,7 @@ const ChordProgressionEditor: Component<Props> = (props) => {
           value={text()}
           inputMode="none"
           onInput={onTextareaInput}
+          onPaste={onPaste}
           ref={textarea}
           id={props.textareaId}
           placeholder={props.placeholder}
