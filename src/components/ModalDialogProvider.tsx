@@ -1,6 +1,9 @@
-import { createContext, createSignal } from "solid-js";
-import type { Component } from "solid-js";
-
+import {
+  createContext,
+  createSignal,
+  Component,
+  ParentComponent,
+} from "solid-js";
 import styles from "./ModalDialogProvider.module.css";
 import { Dynamic } from "solid-js/web";
 
@@ -18,7 +21,7 @@ interface HTMLDialogElement extends HTMLElement {
 }
 
 export const ModalDialogContext = createContext<ModalDialogContextType>();
-const ModalDialogProvider: Component = (props) => {
+const ModalDialogProvider: ParentComponent = (props) => {
   const [dialog, setDialog] = createSignal<Dialog>();
   let ref: HTMLDialogElement | undefined;
   function mouseDown(

@@ -66,7 +66,6 @@ export const chordsToString = (chords: Chord[], keySignature: KeySignature) =>
 /**
  * Parses a chord from a string, assuming it is well-formatted (e.g. all "b"s are replaced with "♭"s).
  * @param string A chord string, e.g. "Cmaj7"
- * @param keySignature Key signature, e.g. -3
  * @returns a chord, or null if the string is invalid
  */
 export function parseChord(string: string): Chord | null {
@@ -83,25 +82,44 @@ export function parseChord(string: string): Chord | null {
   return { root, quality };
 }
 
+interface ChordParseErrorRange {
+  start: number;
+  end: number;
+}
+
 export class ChordParseError extends Error {
-  constructor(message: string) {
+  constructor(message: string, public ranges: ChordParseErrorRange[]) {
     super(message);
     this.name = "ChordParseError";
   }
 }
 
 export function parseChordProgression(string: string): Chord[] {
-  if (string.trim().length === 0) return [];
-  return string
-    .trim()
-    .split(/\s+/)
-    .map((chordString) => {
-      const chord = parseChord(chordString);
-      if (chord == null) {
-        throw new ChordParseError(`Unrecognized chord "${chordString}"`);
-      }
-      return chord;
-    });
+  const words = string.matchAll(/[^\s]+/g);
+  let chords = [];
+  let errorRanges: ChordParseErrorRange[] = [];
+  for (const match of words) {
+    const word = match[0];
+    const chord = parseChord(word);
+    if (chord != null) {
+      chords.push(chord);
+    } else {
+      errorRanges.push({
+        start: match.index!,
+        end: match.index! + word.length,
+      });
+    }
+  }
+  if (errorRanges.length > 0) {
+    throw new ChordParseError(
+      `Unrecognized chord ${string.substring(
+        errorRanges[0].start,
+        errorRanges[0].end
+      )}`,
+      errorRanges
+    );
+  }
+  return chords;
 }
 
 const defaultQualities: ChordQuality[] = [

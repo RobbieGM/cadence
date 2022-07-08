@@ -9,8 +9,6 @@ A simple web app to help composers get inspired for where their piece could go n
 - Output is generated with Markov chains or LSTM
   - Training data is selected by tags
 - No server should be necessary
-- Give invalid chords a highlight somehow rather than just saying they exist
-  - "Unrecognized chord" warning obscures text anyway
 - Don't close modal accidentally if there is unsaved data
 - Zero-margin dialogs on mobile
 - Prerender modal dialogs for better opening perf (probably get rid of ModalDialogProvider and replace with individuals)

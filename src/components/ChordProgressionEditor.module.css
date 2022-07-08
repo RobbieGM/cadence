@@ -11,12 +11,41 @@
   height: 80px;
 }
 
-.textareaContainer textarea {
-  margin: 0;
-  border-radius: 0;
-  height: 80px;
-  resize: none;
+.textareaContainer > :is(textarea, .textareaOverlay) {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
+  height: 100%;
+  padding-inline: 12px;
+  padding-block: 8px;
+  overflow-y: auto;
+}
+
+.ChordProgressionEditor textarea {
+  z-index: 1;
+  color: transparent;
+  background: transparent !important;
+  margin: 0;
+  resize: none;
+  caret-color: black;
+}
+
+.textareaOverlay {
+  border-radius: 0;
+  background: var(--gray-050);
+  transition: background-color 0.2s ease;
+  box-shadow: 0 2px 0px -2px var(--gray-100) inset;
+}
+
+.textareaOverlay mark {
+  background: unset;
+  text-decoration: var(--red-400) wavy underline;
+  text-decoration-skip-ink: none;
+}
+
+.ChordProgressionEditor textarea:focus + .textareaOverlay {
+  background: var(--gray-100);
 }
 
 .textareaContainer .errorMessage {

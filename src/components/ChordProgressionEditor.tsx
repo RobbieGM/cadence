@@ -92,6 +92,24 @@ function removeFirstWord(s: string) {
   return firstIndex === -1 ? "" : s.substring(firstIndex + 1);
 }
 
+function highlightErrors(content: string, error?: ChordParseError | null) {
+  if (error == null || error.ranges.length === 0) return content;
+  let result = content
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+  for (let i = error.ranges.length - 1; i >= 0; i--) {
+    const { start, end } = error.ranges[i];
+    result = `${result.substring(0, start)}<mark>${result.substring(
+      start,
+      end
+    )}</mark>${result.substring(end)}`;
+  }
+  return result;
+}
+
 const ChordProgressionEditor: Component<Props> = (props) => {
   const chords = untrack(() => props.chords); // Make chords non-reactive so the text box doesn't update when the chords are updated
   const [text, setText] = createSignal(
@@ -99,26 +117,22 @@ const ChordProgressionEditor: Component<Props> = (props) => {
     // eslint-disable-next-line solid/reactivity
     chordsToString(chords, props.keySignature)
   );
-  const [errorMessage, setErrorMessage] = createSignal<string | null>(null);
+  const [chordParseError, setChordParseError] = createSignal(
+    null as ChordParseError | null
+  );
   let textarea: HTMLTextAreaElement | undefined;
-  function updateValidity(validity: true | string) {
-    if (validity === true) {
-      setErrorMessage(null);
-      textarea!.setCustomValidity("");
-    } else {
-      setErrorMessage(validity);
-      textarea!.setCustomValidity(validity);
-    }
-  }
+  let textareaOverlay: HTMLDivElement | undefined;
   function updateText(newText: string) {
     batch(() => {
       setText(newText);
       try {
         props.setChords(parseChordProgression(newText));
-        updateValidity(true);
+        textarea!.setCustomValidity("");
+        setChordParseError(null);
       } catch (e) {
         if (e instanceof ChordParseError) {
-          updateValidity(e.message);
+          textarea!.setCustomValidity(e.message);
+          setChordParseError(e);
         } else {
           throw e;
         }
@@ -259,8 +273,16 @@ const ChordProgressionEditor: Component<Props> = (props) => {
           placeholder={props.placeholder}
           spellcheck={false}
           required={props.required}
+          onscroll={() => {
+            textareaOverlay!.scrollTop = textarea!.scrollTop;
+          }}
         ></textarea>
-        <div class={styles.errorMessage}>{errorMessage()}</div>
+        <div
+          class={styles.textareaOverlay}
+          ref={textareaOverlay}
+          innerHTML={highlightErrors(text(), chordParseError())}
+          aria-hidden="true"
+        ></div>
       </div>
       {/* Event handlers prevent blurring the textarea. Disabled eslint rule because the element itself is not interactive */}
       {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
