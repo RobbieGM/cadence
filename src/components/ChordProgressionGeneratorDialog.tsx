@@ -120,6 +120,7 @@ const ChordProgressionGeneratorDialog = wrapModal<Props>((props) => {
                 onSubmit={async (e) => {
                   e.preventDefault();
                   await saveModel(model!, modelNameInput());
+                  setSavedModelName(modelNameInput());
                 }}
               >
                 <input

@@ -55,7 +55,6 @@ const GenerateChordsMenu: Component = () => {
           <button
             class={styles.trainButton}
             onClick={() => {
-              console.debug("Clicked 'train'");
               openModelTrainerDialog({
                 openChordProgressionGeneratorDialog: (model) =>
                   openChordProgressionGeneratorDialog({ model }),

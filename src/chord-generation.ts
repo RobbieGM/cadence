@@ -1,5 +1,6 @@
-import { Chord, chordQualities, Track } from "./types";
+// eslint-disable-next-line max-classes-per-file
 import type { Rank, Sequential, Tensor, Tensor1D } from "@tensorflow/tfjs";
+import { Chord, chordQualities, Track } from "./types";
 
 const DIMENSIONALITY = 12 * chordQualities.length + 1; // Every chord + 1 (empty padding)
 
@@ -23,7 +24,7 @@ type ModelSettings = typeof defaultModelSettings;
 
 function transposeToAllRoots(data: Track[]) {
   let augmented = [...data];
-  for (let i = 1; i < 12; i++) {
+  for (let i = 1; i < 12; i += 1) {
     augmented = augmented.concat(
       data.map((track) => ({
         ...track,
@@ -48,6 +49,8 @@ function chordToInt(chord: Chord) {
 }
 
 function intToChord(number: number): Chord {
+  // Undo reserving 0 for left pad window
+  // eslint-disable-next-line no-param-reassign
   number -= 1;
   return {
     root: number % 12,
@@ -96,18 +99,18 @@ function makeXY(
   let exampleIndex = 0; // An "example" is one windowSize worth of chords, and a corresponding chord afterwards (y)
   tracks.forEach((track) => {
     const chords = track.chords.map(chordToInt);
-    for (let yIndex = 0; yIndex < chords.length; yIndex++) {
+    for (let yIndex = 0; yIndex < chords.length; yIndex += 1) {
       for (
         let xIndex = Math.max(yIndex - windowSize, 0);
         xIndex < yIndex;
-        xIndex++
+        xIndex += 1
       ) {
         const chordIndexInExample = windowSize - (yIndex - xIndex);
         // When the example has fewer than 20 real chords, put them on the right (left zero-pad)
         xsBuffer.set(true, exampleIndex, chordIndexInExample, chords[xIndex]);
       }
       ysBuffer.set(true, exampleIndex, chords[yIndex]);
-      exampleIndex++;
+      exampleIndex += 1;
     }
   });
   return [xsBuffer.toTensor(), ysBuffer.toTensor()];
@@ -115,15 +118,20 @@ function makeXY(
 
 export class Model {
   static TrainingCancelledError = class extends Error {};
+
   private model: Promise<Sequential>;
+
   private trained = false;
+
   private name?: string;
+
   modelSettings: ModelSettings;
 
   /**
    * Create a new model
    */
   constructor(modelSettings: ModelSettings);
+
   /**
    * Load a model from indexedDB.
    */
@@ -223,7 +231,7 @@ export class Model {
   ) {
     const tf = await getTf();
     const model = await this.model;
-    let input = leftPad(
+    const input = leftPad(
       (chords ?? []).map(chordToInt),
       this.modelSettings.windowSize,
       0
@@ -234,34 +242,34 @@ export class Model {
         [1, this.modelSettings.windowSize, DIMENSIONALITY],
         "bool"
       );
-      for (let i = 0; i < this.modelSettings.windowSize; i++) {
+      for (let i = 0; i < this.modelSettings.windowSize; i += 1) {
         buffer.set(true, 0, i, input[i]);
       }
       return buffer.toTensor();
     };
     const sampleOutput = async (output: Tensor<Rank>) => {
-      let data = (await output.data()) as Float32Array;
+      const data = (await output.data()) as Float32Array;
       let sum = 0;
       // Weight data
-      for (let i = 0; i < data.length; i++) {
+      for (let i = 0; i < data.length; i += 1) {
         data[i] = Math.max(0, data[i]);
-        data[i] = data[i] ** distributionExponent; // Make less likely values even less likely
+        data[i] **= distributionExponent; // Make less likely values even less likely
         sum += data[i];
       }
       // Pick weighted random by stopping when another sum passes a random value from 0 to sum
       const random = Math.random() * sum;
       let sum2 = 0;
       let selectedIndex = 0;
+      // eslint-disable-next-line no-constant-condition
       while (true) {
         sum2 += data[selectedIndex];
         if (sum2 >= random) {
           return selectedIndex;
-        } else {
-          selectedIndex++;
         }
+        selectedIndex += 1;
       }
     };
-    for (let i = 0; i < outputLength; i++) {
+    for (let i = 0; i < outputLength; i += 1) {
       const output = model.predict(inputAsTensor()) as Tensor1D;
       const nextChord = intToChord(await sampleOutput(output));
       yield nextChord;

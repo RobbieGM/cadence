@@ -1,3 +1,4 @@
+import { io } from "@tensorflow/tfjs";
 import { DBSchema, openDB } from "idb";
 import {
   createContext,
@@ -12,21 +13,11 @@ interface Schema extends DBSchema {
   tracks: { key: number; value: Track };
 }
 
-interface TFSchema extends DBSchema {
-  model_info_store: {
-    key: string;
-    value: { modelPath: string; modelArtifactsInfo: unknown };
-  };
-  // models_store: {...}
-}
-
 const dbPromise = openDB<Schema>("database", 1, {
   upgrade(db) {
     db.createObjectStore("tracks", { autoIncrement: true });
   },
 });
-
-const tensorflowDbPromise = openDB<TFSchema>("tensorflowjs");
 
 async function getAllTracks(): Promise<TrackWithId[]> {
   let cursor = await (await dbPromise)
@@ -47,20 +38,13 @@ async function getAllTracks(): Promise<TrackWithId[]> {
 }
 
 async function getModelNames() {
-  const tfdb = await tensorflowDbPromise;
-  try {
-    return await tfdb.getAllKeys("model_info_store");
-  } catch (e) {
-    if (e instanceof DOMException) {
-      // Database not found; TF has not created it yet
-      return [];
-    } else throw e;
-  }
+  return Object.keys(await io.listModels()).map((name) =>
+    name.substring("indexeddb://".length)
+  );
 }
 
 async function deleteModel(name: string) {
-  const tfdb = await tensorflowDbPromise;
-  return await tfdb.delete("model_info_store", name);
+  return io.removeModel(`indexeddb://${name}`);
 }
 
 interface DatabaseContextType {
@@ -102,12 +86,10 @@ const DatabaseProvider: ParentComponent = (props) => {
         },
         async saveModel(model, name) {
           await model.save(name);
-          // setModelNames((modelNames) => [name, ...modelNames]);
           refetchModelNames();
         },
         async deleteModel(name) {
           await deleteModel(name);
-          // setModelNames((modelNames) => modelNames.filter((n) => n !== name));
           refetchModelNames();
         },
       }}

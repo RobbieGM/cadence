@@ -1,4 +1,3 @@
-import { debugOwnerComputations } from "@solid-devtools/logger";
 import {
   Component,
   createEffect,
@@ -20,7 +19,6 @@ interface HTMLDialogElement extends HTMLElement {
 
 const ModalDialogWrapper: ParentComponent<DialogProps> = (props) => {
   let dialog: HTMLDialogElement | undefined;
-  debugOwnerComputations();
   createEffect(
     // on(
     //   () => props.open,
