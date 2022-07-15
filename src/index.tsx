@@ -1,10 +1,9 @@
 /* @refresh reload */
+import "requestidlecallback-polyfill"; // https://caniuse.com/requestidlecallback
 import { ErrorBoundary, render } from "solid-js/web";
 import App from "./components/App";
 import DatabaseProvider from "./components/DatabaseProvider";
 import "./styles/index.css";
-import "requestidlecallback-polyfill"; // https://caniuse.com/requestidlecallback
-import ModalDialogProvider from "./components/ModalDialogProvider";
 
 render(
   () => (
@@ -12,13 +11,18 @@ render(
       fallback={(error: any) => {
         // eslint-disable-next-line no-console
         console.error("Error", error);
-        return <p>A serious error occurred. Check the console for details.</p>;
+        return (
+          <>
+            <p>A serious error occurred. Check the console for details.</p>
+            <button class="primary" onClick={() => window.location.reload()}>
+              Reload
+            </button>
+          </>
+        );
       }}
     >
       <DatabaseProvider>
-        <ModalDialogProvider>
-          <App />
-        </ModalDialogProvider>
+        <App />
       </DatabaseProvider>
     </ErrorBoundary>
   ),

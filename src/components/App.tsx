@@ -1,21 +1,18 @@
 import { Component, lazy, Show, useContext } from "solid-js";
-import styles from "./App.module.css";
 import noData from "../assets/no_data.svg";
+import Plus from "../icons/Plus";
+import styles from "./App.module.css";
 import { DatabaseContext } from "./DatabaseProvider";
 import Header from "./Header";
-import Plus from "../icons/Plus";
-import { ModalDialogContext } from "./ModalDialogProvider";
+import type { Props } from "./TrackEditor";
 import TrackList from "./TrackList";
-
-const trackEditorPromise = import("./TrackEditor");
 
 const App: Component = () => {
   const { tracks } = useContext(DatabaseContext)!;
-  const { showDialog } = useContext(ModalDialogContext)!;
+  const TrackEditor = lazy(() => import("./TrackEditor"));
+  let openTrackEditor: (props: Props) => void | undefined;
   async function addTrack() {
-    const { default: createTrackEditor } = await trackEditorPromise;
-    const TrackEditor = createTrackEditor(null);
-    showDialog((props) => <TrackEditor close={props.close} />);
+    openTrackEditor({ track: null });
   }
   return (
     <div class={styles.App}>
@@ -37,9 +34,17 @@ const App: Component = () => {
             </div>
           }
         >
-          <TrackList tracks={tracks()!} />
+          <TrackList
+            tracks={tracks()!}
+            editTrack={(track) => openTrackEditor({ track })}
+          />
         </Show>
       </Show>
+      <TrackEditor
+        ref={({ open }) => {
+          openTrackEditor = open;
+        }}
+      />
     </div>
   );
 };

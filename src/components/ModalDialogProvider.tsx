@@ -1,29 +1,47 @@
+import { debugOwnerComputations } from "@solid-devtools/logger";
 import {
-  createContext,
-  createSignal,
   Component,
+  createEffect,
+  createSignal,
   ParentComponent,
 } from "solid-js";
 import styles from "./ModalDialogProvider.module.css";
-import { Dynamic } from "solid-js/web";
 
-export interface DialogProps {
-  close(): void;
-}
-export type Dialog = Component<DialogProps>;
-interface ModalDialogContextType {
-  showDialog(dialog: Dialog): void;
+interface DialogProps {
+  open: boolean;
+  onClickOutside(): void;
 }
 
 interface HTMLDialogElement extends HTMLElement {
   showModal(): void;
   close(): void;
+  open: boolean;
 }
 
-export const ModalDialogContext = createContext<ModalDialogContextType>();
-const ModalDialogProvider: ParentComponent = (props) => {
-  const [dialog, setDialog] = createSignal<Dialog>();
-  let ref: HTMLDialogElement | undefined;
+const ModalDialogWrapper: ParentComponent<DialogProps> = (props) => {
+  let dialog: HTMLDialogElement | undefined;
+  debugOwnerComputations();
+  createEffect(
+    // on(
+    //   () => props.open,
+    () => {
+      if (props.open) {
+        console.debug(".showModal(), is open:", dialog?.open);
+        try {
+          dialog?.showModal();
+        } catch (err) {
+          console.error("Failed to open dialog", err);
+        }
+      } else {
+        console.debug(".close(), is open:", dialog?.open);
+        dialog?.close();
+      }
+    }
+    // )
+  );
+  createEffect(() => {
+    console.debug("props.open", props.open, "dialog.open", dialog?.open);
+  });
   function mouseDown(
     e: (TouchEvent | MouseEvent) & {
       currentTarget: HTMLElement;
@@ -41,32 +59,63 @@ const ModalDialogProvider: ParentComponent = (props) => {
       clientY <= rect.top + rect.height &&
       rect.left <= clientX &&
       clientX <= rect.left + rect.width;
-    if (!clickedInDialog) ref?.close();
+    if (!clickedInDialog) {
+      dialog?.close();
+      props.onClickOutside();
+    }
     e.stopPropagation();
   }
   return (
-    <ModalDialogContext.Provider
-      value={{
-        showDialog(newDialog: Dialog) {
-          setDialog(() => newDialog);
-          requestIdleCallback(() => {
-            ref?.showModal();
-          });
-        },
-      }}
+    /* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */
+    <dialog
+      ref={dialog}
+      class={styles.Dialog}
+      onTouchStart={mouseDown}
+      onMouseDown={mouseDown}
     >
       {props.children}
-      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
-      <dialog
-        ref={ref}
-        class={styles.Dialog}
-        onTouchStart={mouseDown}
-        onMouseDown={mouseDown}
-      >
-        <Dynamic component={dialog()} close={() => ref?.close()} />
-      </dialog>
-    </ModalDialogContext.Provider>
+    </dialog>
   );
 };
 
-export default ModalDialogProvider;
+/**
+ * Props from the component containing the dialog
+ */
+interface ExternalDialogProps<T> {
+  ref: (value: { open(props: T): void }) => void;
+}
+
+/**
+ * Props visible to the dialog component itself
+ */
+interface InternalDialogProps<T> {
+  close(): void;
+  onOpen(handler: (props: T) => void): void;
+}
+
+export default function wrapModal<T>(
+  Wrapped: Component<InternalDialogProps<T>>
+): Component<ExternalDialogProps<T>> {
+  return (props) => {
+    let onOpen: (p: T) => void | undefined;
+    const [open, setOpen] = createSignal(false);
+    createEffect(() => {
+      props.ref({
+        open(p) {
+          setOpen(true);
+          onOpen(p);
+        },
+      });
+    });
+    return (
+      <ModalDialogWrapper open={open()} onClickOutside={() => setOpen(false)}>
+        <Wrapped
+          close={() => setOpen(false)}
+          onOpen={(handler) => {
+            onOpen = handler;
+          }}
+        />
+      </ModalDialogWrapper>
+    );
+  };
+}

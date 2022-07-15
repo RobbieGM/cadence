@@ -8,7 +8,6 @@ import {
   parseChord,
   parseChordProgression,
 } from "../chord-utils";
-import styles from "./ChordProgressionEditor.module.css";
 import Backspace from "../icons/Backspace";
 import {
   AbsoluteNote,
@@ -17,6 +16,7 @@ import {
   ChordQuality,
   KeySignature,
 } from "../types";
+import styles from "./ChordProgressionEditor.module.css";
 
 const cx = classNames.bind(styles);
 
@@ -100,7 +100,7 @@ function highlightErrors(content: string, error?: ChordParseError | null) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
-  for (let i = error.ranges.length - 1; i >= 0; i--) {
+  for (let i = error.ranges.length - 1; i >= 0; i -= 1) {
     const { start, end } = error.ranges[i];
     result = `${result.substring(0, start)}<mark>${result.substring(
       start,
@@ -139,7 +139,7 @@ const ChordProgressionEditor: Component<Props> = (props) => {
       }
     });
   }
-  function onTextareaInput(e: InputEvent) {
+  function onTextareaInput() {
     if (!textarea) return;
     const before = textarea.value.substring(0, textarea.selectionStart);
     const inside = textarea.value.substring(
@@ -163,7 +163,7 @@ const ChordProgressionEditor: Component<Props> = (props) => {
     const after = textarea!.value.substring(textarea!.selectionEnd);
     let content = e.clipboardData!.getData("text");
     if (!content.startsWith(" ") && !before.endsWith(" "))
-      content = " " + content;
+      content = ` ${content}`;
     if (!content.endsWith(" ") && !after.startsWith(" ")) content += " ";
     updateText(`${before}${content}${after}`);
     textarea!.setSelectionRange(
@@ -280,6 +280,7 @@ const ChordProgressionEditor: Component<Props> = (props) => {
         <div
           class={styles.textareaOverlay}
           ref={textareaOverlay}
+          // eslint-disable-next-line solid/no-innerhtml
           innerHTML={highlightErrors(text(), chordParseError())}
           aria-hidden="true"
         ></div>

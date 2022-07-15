@@ -1,23 +1,19 @@
 import { Component, For, useContext } from "solid-js";
 import { TrackWithId } from "../types";
 
-import styles from "./TrackList.module.css";
 import { chordsToString } from "../chord-utils";
-import Edit from "../icons/Edit";
 import Delete from "../icons/Delete";
+import Edit from "../icons/Edit";
 import { DatabaseContext } from "./DatabaseProvider";
-import { ModalDialogContext } from "./ModalDialogProvider";
+import styles from "./TrackList.module.css";
 
-const trackEditorPromise = import("./TrackEditor");
+interface Props {
+  tracks: TrackWithId[];
+  editTrack(track: TrackWithId): void;
+}
 
-const TrackList: Component<{ tracks: TrackWithId[] }> = (props) => {
-  const { showDialog } = useContext(ModalDialogContext)!;
+const TrackList: Component<Props> = (props) => {
   const { deleteTrack } = useContext(DatabaseContext)!;
-  async function editTrack(track: TrackWithId) {
-    const { default: createTrackEditor } = await trackEditorPromise;
-    const TrackEditor = createTrackEditor(track);
-    showDialog((dialogProps) => <TrackEditor close={dialogProps.close} />);
-  }
   return (
     <section class={styles.TrackList}>
       <div class={styles.label}>Title</div>
@@ -40,7 +36,7 @@ const TrackList: Component<{ tracks: TrackWithId[] }> = (props) => {
               <button
                 type="button"
                 class="icon-only"
-                onClick={() => editTrack(track)}
+                onClick={() => props.editTrack(track)}
                 aria-label="Edit"
               >
                 <Edit />

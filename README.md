@@ -9,12 +9,13 @@ A simple web app to help composers get inspired for where their piece could go n
 - Output is generated with Markov chains or LSTM
   - Training data is selected by tags
 - No server should be necessary
-- Don't close modal accidentally if there is unsaved data
-- Zero-margin dialogs on mobile
-- Prerender modal dialogs for better opening perf (probably get rid of ModalDialogProvider and replace with individuals)
-  - This should fix the related bug where lazy-loading modal content causes layout shift
-  - May also fix bug where after cancelling training it appears to resume if you open training dialog again
-- Allow for time for train model dialog to close before opening chord generator dialog, or open the latter on top
+- Modal dialog fixes
+  - Don't close modal accidentally if there is unsaved data
+  - Zero-margin dialogs on mobile
+  - Prerender modal dialogs for better opening perf (probably get rid of ModalDialogProvider and replace with individuals)
+    - This should fix the related bug where lazy-loading modal content causes layout shift
+    - May also fix bug where after cancelling training it appears to resume if you open training dialog again
+  - Allow for time for train model dialog to close before opening chord generator dialog, or open the latter on top
 - Save and load tracks (to and from downloads)
 - Persistent model settings
 - Enter within textarea should submit form to add/edit track

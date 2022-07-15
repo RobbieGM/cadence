@@ -1,5 +1,5 @@
-import { Component, Index } from "solid-js";
 import { nanoid } from "nanoid/non-secure";
+import { Component, Index } from "solid-js";
 
 import styles from "./TagSelector.module.css";
 

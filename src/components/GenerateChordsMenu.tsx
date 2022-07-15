@@ -4,17 +4,23 @@ import { Component, createSignal, For, lazy, useContext } from "solid-js";
 import Delete from "../icons/Delete";
 import Plus from "../icons/Plus";
 import Run from "../icons/Run";
-import createChordProgressionGeneratorDialog from "./ChordProgressionGeneratorDialog";
+import { Props as ChordProgressionGeneratorDialogProps } from "./ChordProgressionGeneratorDialog";
 import { DatabaseContext } from "./DatabaseProvider";
 import styles from "./GenerateChordsMenu.module.css";
-import { ModalDialogContext } from "./ModalDialogProvider";
+import { Props as ModelTrainerDialogProps } from "./ModelTrainerDialog";
 
 const GenerateChordsMenu: Component = () => {
-  const { showDialog } = useContext(ModalDialogContext)!;
   const ModelTrainerDialog = lazy(() => import("./ModelTrainerDialog"));
+  const ChordProgressionGeneratorDialog = lazy(
+    () => import("./ChordProgressionGeneratorDialog")
+  );
   const { modelNames, deleteModel, getModel } = useContext(DatabaseContext)!;
   const [open, setOpen] = createSignal(false);
   let buttonRef: HTMLButtonElement | undefined;
+  let openModelTrainerDialog: (props: ModelTrainerDialogProps) => void;
+  let openChordProgressionGeneratorDialog: (
+    props: ChordProgressionGeneratorDialogProps
+  ) => void;
   return (
     <div class={styles.wrapper}>
       <button type="button" ref={buttonRef}>
@@ -24,14 +30,17 @@ const GenerateChordsMenu: Component = () => {
       <Dismiss
         menuButton={buttonRef}
         open={open}
-        setOpen={(open) => {
+        setOpen={(newOpen) => {
           // Ignore setting open to true (happens when the button is clicked) unless there are model names
-          if (open && modelNames()?.length === 0) {
+          if (newOpen && modelNames()?.length === 0) {
             // Prompt to train new model instead
-            showDialog(ModelTrainerDialog);
+            openModelTrainerDialog({
+              openChordProgressionGeneratorDialog: (model) =>
+                openChordProgressionGeneratorDialog({ model }),
+            });
             return;
           }
-          setOpen(open);
+          setOpen(newOpen);
         }}
         animation={{
           enterClass: styles.animateFrom,
@@ -46,7 +55,11 @@ const GenerateChordsMenu: Component = () => {
           <button
             class={styles.trainButton}
             onClick={() => {
-              showDialog(ModelTrainerDialog);
+              console.debug("Clicked 'train'");
+              openModelTrainerDialog({
+                openChordProgressionGeneratorDialog: (model) =>
+                  openChordProgressionGeneratorDialog({ model }),
+              });
               setOpen(false);
             }}
           >
@@ -65,9 +78,9 @@ const GenerateChordsMenu: Component = () => {
                     }}
                     onClick={() => {
                       setOpen(false);
-                      const ChordProgressionGeneratorDialog =
-                        createChordProgressionGeneratorDialog(getModel(name));
-                      showDialog(ChordProgressionGeneratorDialog);
+                      openChordProgressionGeneratorDialog({
+                        model: getModel(name),
+                      });
                     }}
                   >
                     {name}
@@ -85,6 +98,19 @@ const GenerateChordsMenu: Component = () => {
           </ul>
         </menu>
       </Dismiss>
+      <ModelTrainerDialog
+        ref={({ open: openFunc }) => {
+          openModelTrainerDialog = (p) => {
+            console.debug("opening model trainer dialog");
+            openFunc(p);
+          };
+        }}
+      />
+      <ChordProgressionGeneratorDialog
+        ref={({ open: openFunc }) => {
+          openChordProgressionGeneratorDialog = openFunc;
+        }}
+      />
     </div>
   );
 };

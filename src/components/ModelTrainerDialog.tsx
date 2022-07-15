@@ -10,14 +10,13 @@ import {
   Model,
   preloadTensorflow,
 } from "../chord-generation";
-import styles from "./ModelTrainerDialog.module.css";
 import detailsSummary from "../styles/details-summary.module.css";
-import { DatabaseContext } from "./DatabaseProvider";
-import { Dialog, ModalDialogContext } from "./ModalDialogProvider";
-import TagSelector, { Tag } from "./TagSelector";
 import { Track } from "../types";
+import { DatabaseContext } from "./DatabaseProvider";
+import wrapModal from "./ModalDialogProvider";
+import styles from "./ModelTrainerDialog.module.css";
 import ProgressBar from "./ProgressBar";
-import createChordProgressionGeneratorDialog from "./ChordProgressionGeneratorDialog";
+import TagSelector, { Tag } from "./TagSelector";
 
 function getAllTags(tracks: Track[]): Tag[] {
   const tagCounts = tracks.reduce((acc, track) => {
@@ -32,9 +31,12 @@ function getAllTags(tracks: Track[]): Tag[] {
 
 const RECOMMENDED_MINIMUM_TRACKS = 10;
 
-const ModelTrainerDialog: Dialog = (props) => {
+export interface Props {
+  openChordProgressionGeneratorDialog(model: Model): void;
+}
+
+const ModelTrainerDialog = wrapModal<Props>((props) => {
   const { tracks } = useContext(DatabaseContext)!;
-  const { showDialog } = useContext(ModalDialogContext)!;
   const tags = createMemo(() => getAllTags(tracks() ?? []));
   const [include, setInclude] = createSignal([] as string[]);
   const [required, setRequired] = createSignal([] as string[]);
@@ -56,8 +58,12 @@ const ModelTrainerDialog: Dialog = (props) => {
   const [model, setModel] = createSignal<Model | undefined>();
   const [progress, setProgress] = createSignal<number | "indeterminate">(0);
   const [progressBarText, setProgressBarText] = createSignal("");
+  let openChordProgressionGeneratorDialog: ((m: Model) => void) | undefined;
   createEffect(() => {
     preloadTensorflow();
+    props.onOpen(({ openChordProgressionGeneratorDialog: openDialog }) => {
+      openChordProgressionGeneratorDialog = openDialog;
+    });
   });
   async function train() {
     setModel(new Model(defaultModelSettings));
@@ -67,7 +73,10 @@ const ModelTrainerDialog: Dialog = (props) => {
         setProgressBarText(text);
       });
       props.close();
-      showDialog(createChordProgressionGeneratorDialog(model()!));
+      // Wait for animation to finish too
+      setTimeout(() => {
+        openChordProgressionGeneratorDialog?.(model()!);
+      }, 300);
     } catch (e) {
       if (!(e instanceof Model.TrainingCancelledError)) {
         setProgress(0);
@@ -176,6 +185,6 @@ const ModelTrainerDialog: Dialog = (props) => {
       </Show>
     </div>
   );
-};
+});
 
 export default ModelTrainerDialog;

@@ -15,7 +15,7 @@
   line-height: 1em;
 }
 
-.Header section {
+.Header > section {
   display: flex;
   gap: 8px;
   flex-direction: row;

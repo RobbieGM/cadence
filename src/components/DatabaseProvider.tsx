@@ -1,12 +1,9 @@
 import { DBSchema, openDB } from "idb";
 import {
-  Accessor,
   createContext,
   createResource,
-  createSignal,
   ParentComponent,
   Resource,
-  Signal,
 } from "solid-js";
 import { Model } from "../chord-generation";
 import { Track, TrackWithId } from "../types";

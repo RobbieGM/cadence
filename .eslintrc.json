@@ -17,13 +17,17 @@
     "plugins": [
         "solid",
         "jsx-a11y",
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "only-warn"
     ],
     "rules": {
         "import/extensions": 0,
         "import/no-unresolved": 0,
         "no-debugger": 1,
         "no-unused-vars": 0,
-        "@typescript-eslint/no-unused-vars": 1
+        "@typescript-eslint/no-unused-vars": 1,
+        "jsx-a11y/label-has-associated-control": 0, // Complains about label for, wants label htmlFor (React-style)
+        "no-restricted-syntax": 0, // for await requires a modern browser, so be it
+        "prefer-destructuring": 0 // SolidJS relies on getters
     }
 }

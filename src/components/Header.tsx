@@ -1,7 +1,7 @@
 import type { Component } from "solid-js";
-import styles from "./Header.module.css";
 import Plus from "../icons/Plus";
 import GenerateChordsMenu from "./GenerateChordsMenu";
+import styles from "./Header.module.css";
 
 interface Props {
   add: () => void;
