@@ -100,7 +100,6 @@ const GenerateChordsMenu: Component = () => {
       <ModelTrainerDialog
         ref={({ open: openFunc }) => {
           openModelTrainerDialog = (p) => {
-            console.debug("opening model trainer dialog");
             openFunc(p);
           };
         }}

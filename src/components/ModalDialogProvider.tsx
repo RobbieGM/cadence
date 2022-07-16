@@ -2,13 +2,14 @@ import {
   Component,
   createEffect,
   createSignal,
+  on,
   ParentComponent,
 } from "solid-js";
 import styles from "./ModalDialogProvider.module.css";
 
 interface DialogProps {
   open: boolean;
-  onClickOutside(): void;
+  onClose(): void;
 }
 
 interface HTMLDialogElement extends HTMLElement {
@@ -20,26 +21,17 @@ interface HTMLDialogElement extends HTMLElement {
 const ModalDialogWrapper: ParentComponent<DialogProps> = (props) => {
   let dialog: HTMLDialogElement | undefined;
   createEffect(
-    // on(
-    //   () => props.open,
-    () => {
-      if (props.open) {
-        console.debug(".showModal(), is open:", dialog?.open);
-        try {
+    on(
+      () => props.open,
+      () => {
+        if (props.open) {
           dialog?.showModal();
-        } catch (err) {
-          console.error("Failed to open dialog", err);
+        } else {
+          dialog?.close();
         }
-      } else {
-        console.debug(".close(), is open:", dialog?.open);
-        dialog?.close();
       }
-    }
-    // )
+    )
   );
-  createEffect(() => {
-    console.debug("props.open", props.open, "dialog.open", dialog?.open);
-  });
   function mouseDown(
     e: (TouchEvent | MouseEvent) & {
       currentTarget: HTMLElement;
@@ -59,7 +51,7 @@ const ModalDialogWrapper: ParentComponent<DialogProps> = (props) => {
       clientX <= rect.left + rect.width;
     if (!clickedInDialog) {
       dialog?.close();
-      props.onClickOutside();
+      props.onClose();
     }
     e.stopPropagation();
   }
@@ -70,6 +62,8 @@ const ModalDialogWrapper: ParentComponent<DialogProps> = (props) => {
       class={styles.Dialog}
       onTouchStart={mouseDown}
       onMouseDown={mouseDown}
+      // @ts-ignore
+      onClose={() => props.onClose()}
     >
       {props.children}
     </dialog>
@@ -106,7 +100,7 @@ export default function wrapModal<T>(
       });
     });
     return (
-      <ModalDialogWrapper open={open()} onClickOutside={() => setOpen(false)}>
+      <ModalDialogWrapper open={open()} onClose={() => setOpen(false)}>
         <Wrapped
           close={() => setOpen(false)}
           onOpen={(handler) => {
