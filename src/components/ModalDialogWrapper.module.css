@@ -2,10 +2,12 @@
   border: none;
   padding: 1.5rem;
   user-select: none;
-  max-width: calc(100vw - 32px);
-  max-height: calc(100% - 40px);
+  max-width: 100%;
+  max-height: calc(90% - 20px);
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  border-radius: 8px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  margin-bottom: 0;
   visibility: hidden;
   transform: translateY(100%);
   display: block;
@@ -14,12 +16,12 @@
     visibility 0.2s ease-in;
   opacity: 0;
   inset-block: 0;
-  margin-bottom: 16px;
   width: 100%;
   will-change: transform;
+  contain: content;
 }
 
-.Dialog[open] {
+.Dialog.open {
   transition: opacity 0.2s ease-out, transform 0.2s ease-out,
     visibility 0.2s ease-out;
   transform: none;
@@ -48,15 +50,16 @@
 }
 
 @media screen and (min-width: 640px) {
-  .Dialog[open],
-  .Dialog:not([open]) {
+  .Dialog.open,
+  .Dialog:not(.open) {
     margin-bottom: auto;
     width: fit-content;
     max-width: 624px;
     transition-duration: 0.15s;
+    border-radius: 8px;
   }
 
-  .Dialog:not([open]) {
+  .Dialog:not(.open) {
     transform: translateY(16px);
   }
 }

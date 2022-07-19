@@ -1,9 +1,10 @@
-import { createEffect, createSignal, useContext } from "solid-js";
+import { createEffect, useContext } from "solid-js";
 import { Chord, Track, TrackWithId } from "../types";
-import wrapModal from "./ModalDialogProvider";
+import wrapModal from "./ModalDialogWrapper";
 
 import ChordProgressionEditor from "./ChordProgressionEditor";
 import { DatabaseContext } from "./DatabaseProvider";
+import { ResettableSignalContext } from "./ResettableSignalContext";
 import styles from "./TrackEditor.module.css";
 
 export interface Props {
@@ -11,6 +12,7 @@ export interface Props {
 }
 
 const TrackEditor = wrapModal<Props>((props) => {
+  const { createSignal } = useContext(ResettableSignalContext)!;
   const [name, setName] = createSignal("");
   const [tags, setTags] = createSignal("");
   const [chords, setChords] = createSignal([] as Chord[]);
@@ -26,6 +28,11 @@ const TrackEditor = wrapModal<Props>((props) => {
         setKeySignature(track.keySignature ?? 0);
         trackId = track.id;
       }
+      setTimeout(() => {
+        // Ideally this should be done when any field is edited but that requires more abstraction
+        // Let's assume instead that if they close the dialog quickly, they opened it on accident
+        props.setDirty();
+      }, 2000);
     });
   });
   function save() {

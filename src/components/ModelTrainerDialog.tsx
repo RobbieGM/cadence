@@ -1,10 +1,4 @@
-import {
-  createEffect,
-  createMemo,
-  createSignal,
-  Show,
-  useContext,
-} from "solid-js";
+import { createEffect, createMemo, Show, useContext } from "solid-js";
 import {
   defaultModelSettings,
   Model,
@@ -13,9 +7,10 @@ import {
 import detailsSummary from "../styles/details-summary.module.css";
 import { Track } from "../types";
 import { DatabaseContext } from "./DatabaseProvider";
-import wrapModal from "./ModalDialogProvider";
+import wrapModal from "./ModalDialogWrapper";
 import styles from "./ModelTrainerDialog.module.css";
 import ProgressBar from "./ProgressBar";
+import { ResettableSignalContext } from "./ResettableSignalContext";
 import TagSelector, { Tag } from "./TagSelector";
 
 function getAllTags(tracks: Track[]): Tag[] {
@@ -37,6 +32,7 @@ export interface Props {
 
 const ModelTrainerDialog = wrapModal<Props>((props) => {
   const { tracks } = useContext(DatabaseContext)!;
+  const { createSignal } = useContext(ResettableSignalContext)!;
   const tags = createMemo(() => getAllTags(tracks() ?? []));
   const [include, setInclude] = createSignal([] as string[]);
   const [required, setRequired] = createSignal([] as string[]);
@@ -55,7 +51,7 @@ const ModelTrainerDialog = wrapModal<Props>((props) => {
         !exclude().some((tag) => track.tags.includes(tag))
     )
   );
-  const [model, setModel] = createSignal<Model | undefined>();
+  const [model, setModel] = createSignal<Model | undefined>(undefined);
   const [progress, setProgress] = createSignal<number | "indeterminate">(0);
   const [progressBarText, setProgressBarText] = createSignal("");
   let openChordProgressionGeneratorDialog: ((m: Model) => void) | undefined;
@@ -66,6 +62,7 @@ const ModelTrainerDialog = wrapModal<Props>((props) => {
     });
   });
   async function train() {
+    props.setDirty();
     setModel(new Model(defaultModelSettings));
     try {
       await model()!.train(selectedTracks(), (newProgress, text) => {
@@ -76,7 +73,7 @@ const ModelTrainerDialog = wrapModal<Props>((props) => {
       // Wait for animation to finish too
       setTimeout(() => {
         openChordProgressionGeneratorDialog?.(model()!);
-      }, 300);
+      }, 200);
     } catch (e) {
       if (!(e instanceof Model.TrainingCancelledError)) {
         setProgress(0);

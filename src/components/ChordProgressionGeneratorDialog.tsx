@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { nanoid } from "nanoid/non-secure";
-import { createEffect, createSignal, Show, useContext } from "solid-js";
+import { createEffect, Show, useContext } from "solid-js";
 import { Model } from "../chord-generation";
 import { chordToString } from "../chord-utils";
 import detailsSummary from "../styles/details-summary.module.css";
@@ -8,7 +8,8 @@ import { Chord } from "../types";
 import ChordProgressionEditor from "./ChordProgressionEditor";
 import styles from "./ChordProgressionGeneratorDialog.module.css";
 import { DatabaseContext } from "./DatabaseProvider";
-import wrapModal from "./ModalDialogProvider";
+import wrapModal from "./ModalDialogWrapper";
+import { ResettableSignalContext } from "./ResettableSignalContext";
 
 export interface Props {
   model: Model;
@@ -16,6 +17,7 @@ export interface Props {
 
 const ChordProgressionGeneratorDialog = wrapModal<Props>((props) => {
   const { saveModel } = useContext(DatabaseContext)!;
+  const { createSignal } = useContext(ResettableSignalContext)!;
   const [savedModelName, setSavedModelName] = createSignal(
     undefined as string | undefined
   );
