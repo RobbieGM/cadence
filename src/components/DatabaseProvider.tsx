@@ -1,4 +1,3 @@
-import { io } from "@tensorflow/tfjs";
 import { DBSchema, openDB } from "idb";
 import {
   createContext,
@@ -13,9 +12,29 @@ interface Schema extends DBSchema {
   tracks: { key: number; value: Track };
 }
 
+interface TFSchema extends DBSchema {
+  model_info_store: {
+    key: string;
+    value: { modelPath: string; modelArtifactsInfo: unknown };
+  };
+  models_store: {
+    key: string;
+    value: { modelPath: string };
+  };
+}
+
 const dbPromise = openDB<Schema>("database", 1, {
   upgrade(db) {
     db.createObjectStore("tracks", { autoIncrement: true });
+  },
+});
+
+let tensorflowDbExists = false;
+const tensorflowDbPromise = openDB<TFSchema>("tensorflowjs", undefined, {
+  upgrade(_database, _oldVersion, _newVersion, transaction) {
+    // Creating it without the tables within before tf gets to it makes tf freak out
+    transaction.abort();
+    tensorflowDbExists = true;
   },
 });
 
@@ -38,13 +57,26 @@ async function getAllTracks(): Promise<TrackWithId[]> {
 }
 
 async function getModelNames() {
-  return Object.keys(await io.listModels()).map((name) =>
-    name.substring("indexeddb://".length)
-  );
+  if (!tensorflowDbExists) return [];
+  const tfdb = await tensorflowDbPromise;
+  try {
+    return await tfdb.getAllKeys("model_info_store");
+  } catch (e) {
+    if (e instanceof DOMException) {
+      // Database not found; TF has not created it yet
+      return [];
+    }
+    throw e;
+  }
 }
 
 async function deleteModel(name: string) {
-  return io.removeModel(`indexeddb://${name}`);
+  if (!tensorflowDbExists) return; // Should be impossible
+  const tfdb = await tensorflowDbPromise;
+  await Promise.all([
+    tfdb.delete("model_info_store", name),
+    tfdb.delete("models_store", name),
+  ]);
 }
 
 interface DatabaseContextType {
