@@ -32,6 +32,7 @@
 }
 
 .textareaOverlay {
+  white-space: pre-wrap;
   border-radius: 0;
   background: var(--gray-050);
   transition: background-color 0.2s ease;

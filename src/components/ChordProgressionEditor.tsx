@@ -1,5 +1,12 @@
 import classNames from "classnames/bind";
-import { batch, Component, createSignal, For, Index, untrack } from "solid-js";
+import {
+  batch,
+  Component,
+  createEffect,
+  createSignal,
+  For,
+  Index,
+} from "solid-js";
 import {
   ChordParseError,
   chordsToString,
@@ -111,12 +118,10 @@ function highlightErrors(content: string, error?: ChordParseError | null) {
 }
 
 const ChordProgressionEditor: Component<Props> = (props) => {
-  const chords = untrack(() => props.chords); // Make chords non-reactive so the text box doesn't update when the chords are updated
-  const [text, setText] = createSignal(
-    // Key signature should not be reactive, and is unlikely to change anyway
-    // eslint-disable-next-line solid/reactivity
-    chordsToString(chords, props.keySignature)
-  );
+  const [text, setText] = createSignal("");
+  createEffect(() => {
+    setText(chordsToString(props.chords, props.keySignature));
+  });
   const [chordParseError, setChordParseError] = createSignal(
     null as ChordParseError | null
   );
@@ -126,7 +131,7 @@ const ChordProgressionEditor: Component<Props> = (props) => {
     batch(() => {
       setText(newText);
       try {
-        props.setChords(parseChordProgression(newText));
+        parseChordProgression(newText);
         textarea!.setCustomValidity("");
         setChordParseError(null);
       } catch (e) {
@@ -138,6 +143,16 @@ const ChordProgressionEditor: Component<Props> = (props) => {
         }
       }
     });
+  }
+  function updateChords() {
+    // Triggers normalization
+    try {
+      props.setChords(parseChordProgression(text()));
+    } catch (e) {
+      if (!(e instanceof ChordParseError)) {
+        throw e;
+      }
+    }
   }
   function onTextareaInput() {
     if (!textarea) return;
@@ -267,6 +282,7 @@ const ChordProgressionEditor: Component<Props> = (props) => {
           value={text()}
           inputMode="none"
           onInput={onTextareaInput}
+          onChange={updateChords}
           onPaste={onPaste}
           ref={textarea}
           id={props.textareaId}
