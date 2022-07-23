@@ -27,6 +27,6 @@ export interface Track {
   name: string;
   chords: Chord[];
   tags: string[];
-  keySignature?: KeySignature;
+  keySignature: KeySignature;
 }
 export type TrackWithId = Track & { id: number };

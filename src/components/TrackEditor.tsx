@@ -25,7 +25,7 @@ const TrackEditor = wrapModal<Props>((props) => {
         setName(track.name);
         setTags(track.tags.join(", "));
         setChords(track.chords);
-        setKeySignature(track.keySignature ?? 0);
+        setKeySignature(track.keySignature);
         trackId = track.id;
       }
       setTimeout(() => {

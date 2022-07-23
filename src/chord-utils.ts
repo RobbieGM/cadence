@@ -1,4 +1,4 @@
-import type { AbsoluteNote, Chord, ChordQuality, KeySignature } from "./types";
+import type { Chord, ChordQuality, KeySignature } from "./types";
 
 const noteNameToAbsoluteNote = {
   C: 0,

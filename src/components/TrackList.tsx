@@ -1,8 +1,9 @@
 import { Component, For, useContext } from "solid-js";
-import { TrackWithId } from "../types";
+import { Track, TrackWithId } from "../types";
 
 import { chordsToString } from "../chord-utils";
 import Delete from "../icons/Delete";
+import Download from "../icons/Download";
 import Edit from "../icons/Edit";
 import { DatabaseContext } from "./DatabaseProvider";
 import styles from "./TrackList.module.css";
@@ -10,6 +11,14 @@ import styles from "./TrackList.module.css";
 interface Props {
   tracks: TrackWithId[];
   editTrack(track: TrackWithId): void;
+}
+
+function download({ name, ...track }: Track) {
+  const link = document.createElement("a");
+  const blob = new Blob([JSON.stringify(track)], { type: "application/json" });
+  link.setAttribute("href", URL.createObjectURL(blob));
+  link.setAttribute("download", `${name}.json`);
+  link.click();
 }
 
 const TrackList: Component<Props> = (props) => {
@@ -30,9 +39,17 @@ const TrackList: Component<Props> = (props) => {
               </For>
             </div>
             <div class={styles.chordsColumn}>
-              {chordsToString(track.chords, track.keySignature ?? 0)}
+              {chordsToString(track.chords, track.keySignature)}
             </div>
             <div class={styles.buttons}>
+              <button
+                type="button"
+                class={`icon-only ${styles.downloadButton}`}
+                onClick={() => download(track)}
+                aria-label="Download"
+              >
+                <Download />
+              </button>
               <button
                 type="button"
                 class="icon-only"

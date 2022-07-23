@@ -11,7 +11,6 @@ A simple web app to help composers get inspired for where their piece could go n
 - No server should be necessary
 - Modal dialog fixes
   - Need to reduce animation jank, should probably ditch native &lt;dialog&gt; since it uses slow CSS selector \[open\]
-- Save and load tracks (to and from downloads)
 - Persistent model settings
 - Enter within textarea should submit form to add/edit track
 - Keyboard shortcuts for "add music", "generate chords"

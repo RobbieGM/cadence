@@ -1,5 +1,10 @@
 .App {
   user-select: none;
+  transition: filter 0.1s ease-in-out;
+}
+
+.App.draggingOver {
+  filter: opacity(0.6);
 }
 
 .emptyState {

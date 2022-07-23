@@ -23,6 +23,7 @@
     "rules": {
         "import/extensions": 0,
         "import/no-unresolved": 0,
+        "no-alert": 0,
         "no-debugger": 1,
         "no-unused-vars": 0,
         "@typescript-eslint/no-unused-vars": 1,
