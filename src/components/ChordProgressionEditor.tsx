@@ -127,11 +127,12 @@ const ChordProgressionEditor: Component<Props> = (props) => {
   );
   let textarea: HTMLTextAreaElement | undefined;
   let textareaOverlay: HTMLDivElement | undefined;
-  function updateText(newText: string) {
+  function updateText(newText: string, performFlush = true) {
     batch(() => {
       setText(newText);
       try {
-        parseChordProgression(newText);
+        const chords = parseChordProgression(newText);
+        if (performFlush) props.setChords(chords);
         textarea!.setCustomValidity("");
         setChordParseError(null);
       } catch (e) {
@@ -144,7 +145,7 @@ const ChordProgressionEditor: Component<Props> = (props) => {
       }
     });
   }
-  function updateChords() {
+  function flush() {
     // Triggers normalization
     try {
       props.setChords(parseChordProgression(text()));
@@ -167,7 +168,7 @@ const ChordProgressionEditor: Component<Props> = (props) => {
       inside,
       after,
     ].map(autocorrect);
-    updateText(`${beforeCorrected}${insideCorrected}${afterCorrected}`);
+    updateText(`${beforeCorrected}${insideCorrected}${afterCorrected}`, false);
     textarea.setSelectionRange(
       beforeCorrected.length,
       beforeCorrected.length + insideCorrected.length
@@ -180,7 +181,7 @@ const ChordProgressionEditor: Component<Props> = (props) => {
     if (!content.startsWith(" ") && !before.endsWith(" "))
       content = ` ${content}`;
     if (!content.endsWith(" ") && !after.startsWith(" ")) content += " ";
-    updateText(`${before}${content}${after}`);
+    updateText(`${before}${content}${after}`, false);
     textarea!.setSelectionRange(
       before.length + content.length,
       before.length + content.length
@@ -282,7 +283,7 @@ const ChordProgressionEditor: Component<Props> = (props) => {
           value={text()}
           inputMode="none"
           onInput={onTextareaInput}
-          onChange={updateChords}
+          onChange={flush}
           onPaste={onPaste}
           ref={textarea}
           id={props.textareaId}
