@@ -1,0 +1,7 @@
+.field {
+  margin-block: 8px;
+}
+
+.field input[type="number"] {
+  margin-block-start: 2px;
+}

@@ -5,7 +5,11 @@ import {
   ParentComponent,
   Resource,
 } from "solid-js";
-import { Model } from "../chord-generation";
+import {
+  defaultModelSettings,
+  Model,
+  ModelSettings,
+} from "../chord-generation";
 import { Track, TrackWithId } from "../types";
 
 interface Schema extends DBSchema {
@@ -88,6 +92,8 @@ interface DatabaseContextType {
   getModel(name: string): Model;
   saveModel(model: Model, name: string): Promise<void>;
   deleteModel(name: string): void;
+  getPersistedModelSettings(): ModelSettings;
+  setPersistedModelSettings(modelSettings: ModelSettings): void;
 }
 
 export const DatabaseContext = createContext<DatabaseContextType>();
@@ -123,6 +129,18 @@ const DatabaseProvider: ParentComponent = (props) => {
         async deleteModel(name) {
           await deleteModel(name);
           refetchModelNames();
+        },
+        getPersistedModelSettings() {
+          const fromStorage = localStorage.getItem("defaultModelSettings");
+          return fromStorage != null
+            ? JSON.parse(fromStorage)
+            : defaultModelSettings;
+        },
+        setPersistedModelSettings(settings) {
+          localStorage.setItem(
+            "defaultModelSettings",
+            JSON.stringify(settings)
+          );
         },
       }}
     >

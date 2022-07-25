@@ -5,6 +5,7 @@ interface ResettableContextType {
    * A substitute for the usual solidjs createSignal which can be reset
    */
   createSignal<U>(value: U): Signal<U>;
+  createSignal<U>(value: () => U): Signal<U>;
   reset(): void;
 }
 
@@ -15,9 +16,13 @@ const ResettableSignalProvider: ParentComponent = (props) => {
   return (
     <ResettableSignalContext.Provider
       value={{
-        createSignal(initial) {
-          const [value, setValue] = createSignal(initial);
-          signalResetters.push(() => setValue(() => initial));
+        createSignal<U>(initial: U | (() => U)) {
+          const getInitial =
+            typeof initial === "function"
+              ? (initial as () => U)
+              : () => initial;
+          const [value, setValue] = createSignal(getInitial());
+          signalResetters.push(() => setValue(getInitial));
           return [value, setValue];
         },
         reset() {

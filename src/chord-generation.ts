@@ -20,7 +20,7 @@ export const defaultModelSettings = {
   validationSplit: 0.2,
   learningRate: 1e-2,
 };
-type ModelSettings = typeof defaultModelSettings;
+export type ModelSettings = typeof defaultModelSettings;
 
 function transposeToAllRoots(data: Track[]) {
   let augmented = [...data];

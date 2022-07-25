@@ -1,13 +1,10 @@
 import { createEffect, createMemo, Show, useContext } from "solid-js";
-import {
-  defaultModelSettings,
-  Model,
-  preloadTensorflow,
-} from "../chord-generation";
+import { Model, ModelSettings, preloadTensorflow } from "../chord-generation";
 import detailsSummary from "../styles/details-summary.module.css";
 import { Track } from "../types";
 import { DatabaseContext } from "./DatabaseProvider";
 import wrapModal from "./ModalDialogWrapper";
+import ModelSettingsEditor from "./ModelSettings";
 import styles from "./ModelTrainerDialog.module.css";
 import ProgressBar from "./ProgressBar";
 import { ResettableSignalContext } from "./ResettableSignalContext";
@@ -31,12 +28,15 @@ export interface Props {
 }
 
 const ModelTrainerDialog = wrapModal<Props>((props) => {
-  const { tracks } = useContext(DatabaseContext)!;
+  const { tracks, getPersistedModelSettings } = useContext(DatabaseContext)!;
   const { createSignal } = useContext(ResettableSignalContext)!;
   const tags = createMemo(() => getAllTags(tracks() ?? []));
   const [include, setInclude] = createSignal([] as string[]);
   const [required, setRequired] = createSignal([] as string[]);
   const [exclude, setExclude] = createSignal([] as string[]);
+  const [modelSettings, setModelSettings] = createSignal<ModelSettings>(
+    getPersistedModelSettings
+  );
   const [showMustSelectTracksHint, setShowMustSelectTracksHint] =
     createSignal(false);
   const [
@@ -63,7 +63,7 @@ const ModelTrainerDialog = wrapModal<Props>((props) => {
   });
   async function train() {
     props.setDirty();
-    setModel(new Model(defaultModelSettings));
+    setModel(new Model(modelSettings()));
     try {
       await model()!.train(selectedTracks(), (newProgress, text) => {
         setProgress(() => newProgress);
@@ -99,7 +99,7 @@ const ModelTrainerDialog = wrapModal<Props>((props) => {
           setSelectedTags={setInclude}
         />
       </fieldset>
-      <details class={styles.filterOptionsDetails}>
+      <details>
         <summary>Filter</summary>
         <div class={detailsSummary.indented}>
           <fieldset>
@@ -122,6 +122,15 @@ const ModelTrainerDialog = wrapModal<Props>((props) => {
               setSelectedTags={setExclude}
             />
           </fieldset>
+        </div>
+      </details>
+      <details>
+        <summary>AI Settings</summary>
+        <div class={detailsSummary.indented}>
+          <ModelSettingsEditor
+            modelSettings={modelSettings()}
+            setModelSettings={setModelSettings}
+          />
         </div>
       </details>
       <p class={styles.hint}>{selectedTracks().length} tracks selected</p>
