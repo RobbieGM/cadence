@@ -33,13 +33,19 @@ const dbPromise = openDB<Schema>("database", 1, {
   },
 });
 
-let tensorflowDbExists = false;
+let tensorflowDbExists = true;
 const tensorflowDbPromise = openDB<TFSchema>("tensorflowjs", undefined, {
   upgrade(_database, _oldVersion, _newVersion, transaction) {
     // Creating it without the tables within before tf gets to it makes tf freak out
+    tensorflowDbExists = false;
+    // This creates a (harmless) error message in the console
     transaction.abort();
-    tensorflowDbExists = true;
   },
+}).catch((e) => {
+  if (e.name === "AbortError") {
+    return null;
+  }
+  throw e;
 });
 
 async function getAllTracks(): Promise<TrackWithId[]> {
@@ -63,20 +69,14 @@ async function getAllTracks(): Promise<TrackWithId[]> {
 async function getModelNames() {
   if (!tensorflowDbExists) return [];
   const tfdb = await tensorflowDbPromise;
-  try {
-    return await tfdb.getAllKeys("model_info_store");
-  } catch (e) {
-    if (e instanceof DOMException) {
-      // Database not found; TF has not created it yet
-      return [];
-    }
-    throw e;
-  }
+  if (tfdb == null) return [];
+  return tfdb.getAllKeys("model_info_store");
 }
 
 async function deleteModel(name: string) {
   if (!tensorflowDbExists) return; // Should be impossible
   const tfdb = await tensorflowDbPromise;
+  if (tfdb == null) return;
   await Promise.all([
     tfdb.delete("model_info_store", name),
     tfdb.delete("models_store", name),
