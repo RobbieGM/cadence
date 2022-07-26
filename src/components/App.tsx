@@ -82,7 +82,7 @@ const App: Component = () => {
           when={tracks()!.length > 0}
           fallback={
             <div class={styles.emptyState}>
-              <img src={noData} alt="" />
+              <img src={noData} alt="" style="aspect-ratio: 648/632" />
               <p>
                 Add music for Cadence to train its AI on in order to generate
                 chords.
