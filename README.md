@@ -11,7 +11,6 @@ A simple web app to help composers get inspired for where their piece could go n
 - No server should be necessary
 - Modal dialog fixes
   - Need to reduce animation jank, should probably ditch native &lt;dialog&gt; since it uses slow CSS selector \[open\]
-- Display newest first
 - Eliminate gap between "Chords" label and textarea in ChordProgressionGeneratorDialog
 - Make widths as low as 320px work (currently there is a horizontal scrollbar)
 - Disallow chord generation before any tracks are there (animate "add track" button)

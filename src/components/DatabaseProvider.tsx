@@ -63,7 +63,7 @@ async function getAllTracks(): Promise<TrackWithId[]> {
     // eslint-disable-next-line no-await-in-loop
     cursor = await cursor.continue();
   }
-  return tracks;
+  return tracks.reverse();
 }
 
 async function getModelNames() {
