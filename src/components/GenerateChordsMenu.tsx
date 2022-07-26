@@ -4,6 +4,7 @@ import { Component, createSignal, For, lazy, useContext } from "solid-js";
 import Delete from "../icons/Delete";
 import Plus from "../icons/Plus";
 import Run from "../icons/Run";
+import useKeyboardShortcut from "../use-keyboard-shortcut";
 import { Props as ChordProgressionGeneratorDialogProps } from "./ChordProgressionGeneratorDialog";
 import { DatabaseContext } from "./DatabaseProvider";
 import styles from "./GenerateChordsMenu.module.css";
@@ -17,30 +18,42 @@ const GenerateChordsMenu: Component = () => {
   const { modelNames, deleteModel, getModel } = useContext(DatabaseContext)!;
   const [open, setOpen] = createSignal(false);
   let buttonRef: HTMLButtonElement | undefined;
+  let trainButton: HTMLButtonElement | undefined;
   let openModelTrainerDialog: (props: ModelTrainerDialogProps) => void;
   let openChordProgressionGeneratorDialog: (
     props: ChordProgressionGeneratorDialogProps
   ) => void;
+  function generateChords(focusFirstButton = false) {
+    if (modelNames()?.length === 0) {
+      // Prompt to train new model instead
+      openModelTrainerDialog({
+        openChordProgressionGeneratorDialog: (model) =>
+          openChordProgressionGeneratorDialog({ model }),
+      });
+      return;
+    }
+    setOpen(true);
+    if (focusFirstButton) {
+      trainButton?.focus();
+    }
+  }
+  useKeyboardShortcut(["Ctrl", "KeyG"], () => generateChords(true));
   return (
     <div class={styles.wrapper}>
       <button type="button" ref={buttonRef}>
         <Run />
         Generate chords
+        <kbd aria-label="Control G">^G</kbd>
       </button>
       <Dismiss
         menuButton={buttonRef}
         open={open}
         setOpen={(newOpen) => {
-          // Ignore setting open to true (happens when the button is clicked) unless there are model names
-          if (newOpen && modelNames()?.length === 0) {
-            // Prompt to train new model instead
-            openModelTrainerDialog({
-              openChordProgressionGeneratorDialog: (model) =>
-                openChordProgressionGeneratorDialog({ model }),
-            });
-            return;
+          if (newOpen) {
+            generateChords();
+          } else {
+            setOpen(false);
           }
-          setOpen(newOpen);
         }}
         animation={{
           enterClass: styles.animateFrom,
@@ -53,6 +66,7 @@ const GenerateChordsMenu: Component = () => {
       >
         <menu>
           <button
+            ref={trainButton}
             class={styles.trainButton}
             onClick={() => {
               openModelTrainerDialog({

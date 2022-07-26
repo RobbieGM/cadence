@@ -136,6 +136,20 @@ button.primary > svg {
   color: var(--gray-100);
 }
 
+button kbd {
+  display: none;
+  font: inherit;
+  color: var(--gray-600);
+  margin-left: 4px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  /* Probably has physical keyboard */
+  button kbd {
+    display: initial;
+  }
+}
+
 input[type="text"] {
   height: 40px;
   line-height: 40px;
