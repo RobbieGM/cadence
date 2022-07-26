@@ -33,9 +33,13 @@ const TrackList: Component<Props> = (props) => {
         {(track) => (
           <>
             <div>{track.name}</div>
-            <div>
+            <div class={styles.tags}>
               <For each={track.tags}>
-                {(tag) => <span class={styles.tag}>{tag}</span>}
+                {(tag) => (
+                  <>
+                    <span class={styles.tag}>{tag}</span>,
+                  </>
+                )}
               </For>
             </div>
             <div class={styles.chordsColumn}>

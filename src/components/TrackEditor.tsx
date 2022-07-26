@@ -40,11 +40,13 @@ const TrackEditor = wrapModal<Props>((props) => {
     });
   });
   function save() {
+    const tagsArray = tags()
+      .split(",")
+      .map((s) => s.trim());
+    if (tagsArray[tagsArray.length - 1] === "") tagsArray.pop(); // Allow trailing comma
     const trackFromFormData: Track = {
       name: name(),
-      tags: tags()
-        .split(",")
-        .map((s) => s.trim()),
+      tags: tagsArray,
       chords: chords(),
       keySignature: keySignature(),
     };

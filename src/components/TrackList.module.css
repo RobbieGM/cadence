@@ -30,6 +30,10 @@
   font-weight: bold;
 }
 
+.tags {
+  font-size: 0; /* invisible commas */
+}
+
 .tag {
   display: inline-block;
   height: 20px;
