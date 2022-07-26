@@ -2,30 +2,31 @@
 
 A simple web app to help composers get inspired for where their piece could go next harmonically. Cadence generates or completes chord progressions based on existing music, allowing for organization by style or mood.
 
+## Highlights
+
+- Offline-capable PWA and fully client-side
+- ML powered by Tensorflow.js
+- Built with desktop power users in mind, with useful keyboard shortcuts
+
+## Future enhancements and bugs
+
+- Modal dialog fixes
+  - Need to reduce animation jank, should probably ditch native &lt;dialog&gt; since it uses slow CSS selector \[open\]
+- Model training in Web Worker
+- TensorFlow bundle size reduction (last time I tried using its profiling, it crashed my whole computer)
+- navigator.storage.persist
+- Change underlying structure of chords from root and quality to notes which are on/off
+  - This will reduce the dimensionality of the model as well as allow for more expressivity
+  - The model will be able to more easily "intuit" which chords are similar to others by note overlap
+- MIDI keyboard support
+- Closing and reopening modal dialog should reset tab focus to first element
+
 ## Goals, specifications, TODO
 
 - PWA, usable offline
 - Data is saved client-side but can be exported for sharing
 - Output is generated with Markov chains or LSTM
   - Training data is selected by tags
-- No server should be necessary
-- Modal dialog fixes
-  - Need to reduce animation jank, should probably ditch native &lt;dialog&gt; since it uses slow CSS selector \[open\]
-- TensorFlow bundle size reduction (there's a tutorial on this somewhere)
-- navigator.storage.persist
-- Closing and reopening modal dialog should reset tab focus to first element
-
-## Usage
-
-Those templates dependencies are maintained via [pnpm](https://pnpm.io) via `pnpm up -Lri`.
-
-This is the reason you see a `pnpm-lock.yaml`. That being said, any package manager will work. This file can be safely be removed once you clone a template.
-
-```bash
-$ npm install # or pnpm install or yarn install
-```
-
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
 
 ## Available Scripts
 
