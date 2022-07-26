@@ -21,13 +21,6 @@ A simple web app to help composers get inspired for where their piece could go n
 - MIDI keyboard support
 - Closing and reopening modal dialog should reset tab focus to first element
 
-## Goals, specifications, TODO
-
-- PWA, usable offline
-- Data is saved client-side but can be exported for sharing
-- Output is generated with Markov chains or LSTM
-  - Training data is selected by tags
-
 ## Available Scripts
 
 In the project directory, you can run:
