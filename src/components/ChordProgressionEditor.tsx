@@ -318,6 +318,7 @@ const ChordProgressionEditor: Component<Props> = (props) => {
                   aria-label={note()}
                   class={cx("key", note().split(" "))}
                   onClick={() => insertChord(i)}
+                  tabIndex={-1}
                 ></button>
               )}
             </Index>
@@ -326,6 +327,7 @@ const ChordProgressionEditor: Component<Props> = (props) => {
             type="button"
             class={`${styles.backspace}`}
             onClick={backspace}
+            tabIndex={-1}
           >
             <Backspace />
           </button>
@@ -336,6 +338,7 @@ const ChordProgressionEditor: Component<Props> = (props) => {
               <button
                 type="button"
                 onClick={() => setCurrentChordQuality(quality)}
+                tabIndex={-1}
               >
                 {chordQualityLabels[quality]}
               </button>
