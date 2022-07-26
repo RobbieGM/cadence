@@ -8,6 +8,7 @@ import useKeyboardShortcut from "../use-keyboard-shortcut";
 import { Props as ChordProgressionGeneratorDialogProps } from "./ChordProgressionGeneratorDialog";
 import { DatabaseContext } from "./DatabaseProvider";
 import styles from "./GenerateChordsMenu.module.css";
+import headerStyles from "./Header.module.css";
 import { Props as ModelTrainerDialogProps } from "./ModelTrainerDialog";
 
 const GenerateChordsMenu: Component = () => {
@@ -40,7 +41,7 @@ const GenerateChordsMenu: Component = () => {
   useKeyboardShortcut(["Ctrl", "KeyG"], () => generateChords(true));
   return (
     <div class={styles.wrapper}>
-      <button type="button" ref={buttonRef}>
+      <button type="button" ref={buttonRef} class={headerStyles.headerButton}>
         <Run />
         Generate chords
         <kbd aria-label="Control G">^G</kbd>

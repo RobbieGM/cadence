@@ -16,7 +16,11 @@ const Header: Component<Props> = (props) => {
         <span class={styles.hideWhenSmall}>Your&nbsp;</span>Music
       </h1>
       <section>
-        <button type="button" onClick={() => props.add()}>
+        <button
+          type="button"
+          class={styles.headerButton}
+          onClick={() => props.add()}
+        >
           <Plus />
           Add
           <span class={styles.hideWhenSmall}>&nbsp;music</span>

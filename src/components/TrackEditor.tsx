@@ -84,7 +84,9 @@ const TrackEditor = wrapModal<Props>((props) => {
         />
       </label>
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-      <label for="chord-progression-editor">Chords</label>
+      <label for="chord-progression-editor" style="margin-bottom: -4px">
+        Chords
+      </label>
       <ChordProgressionEditor
         chords={chords()}
         setChords={setChords}

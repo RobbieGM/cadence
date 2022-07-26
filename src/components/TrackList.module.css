@@ -19,6 +19,12 @@
   }
 }
 
+@media screen and (max-width: 360px) {
+  .TrackList {
+    margin: 8px 4px 8px 12px;
+  }
+}
+
 .label {
   user-select: none;
   font-weight: bold;
