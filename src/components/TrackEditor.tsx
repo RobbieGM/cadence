@@ -1,4 +1,8 @@
-import { createEffect, useContext } from "solid-js";
+import {
+  createEffect,
+  createSignal as createPersistentSignal,
+  useContext,
+} from "solid-js";
 import { Chord, Track, TrackWithId } from "../types";
 import wrapModal from "./ModalDialogWrapper";
 
@@ -14,7 +18,7 @@ export interface Props {
 const TrackEditor = wrapModal<Props>((props) => {
   const { createSignal } = useContext(ResettableSignalContext)!;
   const [name, setName] = createSignal("");
-  const [tags, setTags] = createSignal("");
+  const [tags, setTags] = createPersistentSignal("");
   const [chords, setChords] = createSignal([] as Chord[]);
   const [keySignature, setKeySignature] = createSignal(0);
   const { addTrack, updateTrack } = useContext(DatabaseContext)!;

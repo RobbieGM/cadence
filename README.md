@@ -11,7 +11,6 @@ A simple web app to help composers get inspired for where their piece could go n
 - No server should be necessary
 - Modal dialog fixes
   - Need to reduce animation jank, should probably ditch native &lt;dialog&gt; since it uses slow CSS selector \[open\]
-- Persist tags between adding one track to the next
 - Make chord progression editor non-keyboard-accessible (apart from text box)?
 - Display newest first
 - Eliminate gap between "Chords" label and textarea in ChordProgressionGeneratorDialog
@@ -21,6 +20,7 @@ A simple web app to help composers get inspired for where their piece could go n
 - Well-defined height for clipboard image in empty state so it doesn't cause layout shift
 - TensorFlow bundle size reduction (there's a tutorial on this somewhere)
 - navigator.storage.persist
+- Closing and reopening modal dialog should reset tab focus to first element
 
 ## Usage
 
