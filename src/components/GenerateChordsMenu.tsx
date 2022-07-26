@@ -11,20 +11,29 @@ import styles from "./GenerateChordsMenu.module.css";
 import headerStyles from "./Header.module.css";
 import { Props as ModelTrainerDialogProps } from "./ModelTrainerDialog";
 
-const GenerateChordsMenu: Component = () => {
+interface Props {
+  onAttemptGenerationWithoutTracks(): void;
+}
+
+const GenerateChordsMenu: Component<Props> = (props) => {
   const ModelTrainerDialog = lazy(() => import("./ModelTrainerDialog"));
   const ChordProgressionGeneratorDialog = lazy(
     () => import("./ChordProgressionGeneratorDialog")
   );
-  const { modelNames, deleteModel, getModel } = useContext(DatabaseContext)!;
+  const { modelNames, deleteModel, getModel, tracks } =
+    useContext(DatabaseContext)!;
   const [open, setOpen] = createSignal(false);
   let buttonRef: HTMLButtonElement | undefined;
   let trainButton: HTMLButtonElement | undefined;
-  let openModelTrainerDialog: (props: ModelTrainerDialogProps) => void;
+  let openModelTrainerDialog: (p: ModelTrainerDialogProps) => void;
   let openChordProgressionGeneratorDialog: (
-    props: ChordProgressionGeneratorDialogProps
+    p: ChordProgressionGeneratorDialogProps
   ) => void;
   function generateChords(focusFirstButton = false) {
+    if (!tracks()?.length) {
+      props.onAttemptGenerationWithoutTracks();
+      return;
+    }
     if (modelNames()?.length === 0) {
       // Prompt to train new model instead
       openModelTrainerDialog({

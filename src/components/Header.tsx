@@ -10,6 +10,17 @@ interface Props {
 
 const Header: Component<Props> = (props) => {
   useKeyboardShortcut(["Ctrl", "Enter"], () => props.add());
+  let addTrackButton: HTMLButtonElement | undefined;
+  function onAttemptGenerationWithoutTracks() {
+    addTrackButton!.animate(
+      [
+        { transform: "none" },
+        { transform: "scale(1.1)" },
+        { transform: "none" },
+      ],
+      { duration: 200, easing: "cubic-bezier(0,.4,1,.6)" }
+    );
+  }
   return (
     <header class={styles.Header}>
       <h1>
@@ -20,13 +31,16 @@ const Header: Component<Props> = (props) => {
           type="button"
           class={styles.headerButton}
           onClick={() => props.add()}
+          ref={addTrackButton}
         >
           <Plus />
           Add
           <span class={styles.hideWhenSmall}>&nbsp;music</span>
           <kbd aria-label="Control Enter">^↵</kbd>
         </button>
-        <GenerateChordsMenu />
+        <GenerateChordsMenu
+          onAttemptGenerationWithoutTracks={onAttemptGenerationWithoutTracks}
+        />
       </section>
     </header>
   );

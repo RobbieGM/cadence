@@ -15,7 +15,7 @@ const TagSelector: Component<Props> = (props) => {
   const id = nanoid();
   return (
     <div class={styles.TagSelector}>
-      <Index each={props.allTags}>
+      <Index each={props.allTags} fallback={<em>No tracks found.</em>}>
         {(tag) => (
           <div class={styles.container}>
             <input
