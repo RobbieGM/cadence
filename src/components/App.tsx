@@ -8,6 +8,8 @@ import {
   useContext,
 } from "solid-js";
 import noData from "../assets/no_data.svg";
+import Download from "../icons/Download";
+import Loader from "../icons/Loader";
 import Plus from "../icons/Plus";
 import { Track } from "../types";
 import styles from "./App.module.css";
@@ -26,9 +28,10 @@ function isValidTrack(track: any): track is Track {
 }
 
 const App: Component = () => {
-  const { tracks, addTrack } = useContext(DatabaseContext)!;
+  const { tracks, addTrack, addTracks } = useContext(DatabaseContext)!;
   const TrackEditor = lazy(() => import("./TrackEditor"));
   const [draggingOver, setDraggingOver] = createSignal(false);
+  const [sampleDatasetLoading, setSampleDatasetLoading] = createSignal(false);
   let openTrackEditor: (props: Props) => void | undefined;
   onMount(() => {
     window.addEventListener("dragenter", () => setDraggingOver(true));
@@ -74,6 +77,14 @@ const App: Component = () => {
       });
     });
   });
+  async function importSampleDataset() {
+    setSampleDatasetLoading(true);
+    const tracks = (await fetch("/sample-dataset.json").then((response) =>
+      response.json()
+    )) as Track[];
+    await addTracks(tracks);
+    setSampleDatasetLoading(false);
+  }
   return (
     <div class={classNames(styles.App, draggingOver() && styles.draggingOver)}>
       <Header add={() => openTrackEditor({ track: null })} />
@@ -94,6 +105,12 @@ const App: Component = () => {
               >
                 <Plus />
                 Add music
+              </button>
+              <button type="button" onClick={importSampleDataset}>
+                <Show when={sampleDatasetLoading()} fallback={<Download />}>
+                  <Loader />
+                </Show>
+                Import sample dataset
               </button>
             </div>
           }

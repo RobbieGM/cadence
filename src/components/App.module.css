@@ -27,3 +27,7 @@
   text-align: center;
   margin-block: 16px;
 }
+
+.emptyState button {
+  margin-bottom: 4px;
+}

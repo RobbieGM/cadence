@@ -86,6 +86,7 @@ async function deleteModel(name: string) {
 interface DatabaseContextType {
   tracks: Resource<TrackWithId[] | undefined>;
   addTrack(track: Track): Promise<void>;
+  addTracks(tracks: Track[]): Promise<void>;
   deleteTrack(id: number): Promise<void>;
   updateTrack(id: number, track: Track): Promise<void>;
   modelNames: Resource<string[] | undefined>;
@@ -108,6 +109,17 @@ const DatabaseProvider: ParentComponent = (props) => {
         tracks,
         async addTrack(track) {
           await (await dbPromise).add("tracks", track);
+          refetch();
+        },
+        async addTracks(tracksToAdd) {
+          const transaction = (await dbPromise).transaction(
+            "tracks",
+            "readwrite"
+          );
+          tracksToAdd.forEach((track) =>
+            transaction.objectStore("tracks").add(track)
+          );
+          await transaction.done;
           refetch();
         },
         async deleteTrack(id) {
