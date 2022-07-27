@@ -13,12 +13,16 @@ render(
         // eslint-disable-next-line no-console
         console.error("Error", error);
         return (
-          <>
+          <div style="margin: 8px">
             <p>A serious error occurred. Check the console for details.</p>
             <button class="primary" onClick={() => window.location.reload()}>
               Reload
             </button>
-          </>
+            <details>
+              <summary>Error details</summary>
+              {error.toString()}
+            </details>
+          </div>
         );
       }}
     >
